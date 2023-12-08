@@ -14,7 +14,7 @@ public class DexTypeUtils {
     }
 
     /**
-     * find SmaliForm ClassName get Class
+     * find class from smali format className
      *
      * @param fullClassName Ljava/lang/fullClassName ? V
      * @return Class
@@ -58,10 +58,14 @@ public class DexTypeUtils {
     }
 
     /**
+     * convert SmaliFormat To JavaFormat
+     *
      * @param fullType Full ClassName
      */
     public static String conversionTypeName(String fullType) {
+        //is base type array
         if (isSimpleArray(fullType)) return findSimpleTypeArray(fullType).getName();
+        //is base type
         if (fullType.length() == 1) return findSimpleType(fullType.charAt(0)).getName();
         StringBuilder sb = new StringBuilder(fullType);
         sb.deleteCharAt(sb.indexOf("L"));//delete ["L"java/lang/name;

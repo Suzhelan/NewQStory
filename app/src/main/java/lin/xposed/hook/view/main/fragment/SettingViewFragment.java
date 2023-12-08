@@ -62,7 +62,6 @@ public class SettingViewFragment extends Fragment {
         LinearSpacingItemDecoration linearSpacingItemDecoration = new LinearSpacingItemDecoration();
         recyclerView.addItemDecoration(linearSpacingItemDecoration);
 
-
         //退回到QQ设置页面
         MainSettingActivity.leftText.setOnClickListener(new View.OnClickListener() {
             @Override

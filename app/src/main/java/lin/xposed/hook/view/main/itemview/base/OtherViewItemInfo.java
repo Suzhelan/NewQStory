@@ -8,9 +8,9 @@ import java.util.List;
 
 import lin.xposed.hook.view.main.itemview.AddTelegramChannel;
 import lin.xposed.hook.view.main.itemview.AddTelegramGroup;
+import lin.xposed.hook.view.main.itemview.DeleteMethodInfo;
 import lin.xposed.hook.view.main.itemview.EndAllActivity;
 import lin.xposed.hook.view.main.itemview.GithubSourceCode;
-import lin.xposed.hook.view.main.itemview.StartFindMethod;
 import lin.xposed.hook.view.main.itemview.Update;
 
 
@@ -28,7 +28,7 @@ public abstract class OtherViewItemInfo {
         OTHER_VIEW_ITEM_INFO_LIST.add(GithubSourceCode.class);
         OTHER_VIEW_ITEM_INFO_LIST.add(AddTelegramChannel.class);
         OTHER_VIEW_ITEM_INFO_LIST.add(AddTelegramGroup.class);
-        OTHER_VIEW_ITEM_INFO_LIST.add(StartFindMethod.class);
+        OTHER_VIEW_ITEM_INFO_LIST.add(DeleteMethodInfo.class);
     }
 
     public OtherViewItemInfo(Context context) {

@@ -111,6 +111,11 @@ public class MiniProgramsSkipAds extends BaseSwitchFunctionHookItem implements I
     }
 
     @Override
+    public String getTips() {
+        return "脆弱的功能 很容易坏";
+    }
+
+    @Override
     public void getMethod(MethodFinder finder) {
         m1 = finder.getMethod("GdtMotiveBrowsingDialog : doOnBackEvent");
     }

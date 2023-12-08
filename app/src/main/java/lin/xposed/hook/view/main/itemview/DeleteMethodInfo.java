@@ -8,9 +8,9 @@ import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.hook.HookEnv;
 import lin.xposed.hook.view.main.itemview.base.OtherViewItemInfo;
 
-public class StartFindMethod extends OtherViewItemInfo {
+public class DeleteMethodInfo extends OtherViewItemInfo {
 
-    public StartFindMethod(Context context) {
+    public DeleteMethodInfo(Context context) {
         super(context);
     }
 
