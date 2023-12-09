@@ -13,14 +13,17 @@ public class MethodStringFinder extends BaseFinder {
     @Override
     public void startParserMethodId(DexParser dexParser, DexMethodId dexMethodId) {
         if (dexMethodId.getUsedStringList() == null) return;
+        int theNumberOfStringOccurrences = 0;
         for (Integer string_ids : dexMethodId.getUsedStringList()) {
             String method_string = dexParser.dexStringIdsList[string_ids].getString(dexParser);
-            if (method_string.contains(findString)) {
-                String methodName = dexParser.dexStringIdsList[dexMethodId.name_idx].getString(dexParser);
-                if (methodName.equals("<init>") || methodName.equals("<cinit>")) {
-                    continue;
+            for (String find : findString) {
+                if (method_string.contains(find)) {
+                    theNumberOfStringOccurrences++;
                 }
+            }
+            if (theNumberOfStringOccurrences >= findString.length) {
                 addMethodToResult(dexParser, dexMethodId);
+                break;
             }
         }
     }

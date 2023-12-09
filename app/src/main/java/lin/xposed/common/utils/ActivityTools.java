@@ -30,7 +30,7 @@ public class ActivityTools {
 
     }
 
-    private static List<View> getAllChildViews(View view) {
+    public static List<View> getAllChildViews(View view) {
         List<View> allChildren = new ArrayList<>();
         if (view instanceof ViewGroup vp) {
             for (int i = 0; i < vp.getChildCount(); i++) {
@@ -41,7 +41,6 @@ public class ActivityTools {
             }
         }
         return allChildren;
-
     }
     /*
      * 注入Res资源到上下文

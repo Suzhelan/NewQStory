@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 @SuppressLint("StaticFieldLeak")
 public class HookEnv {
     //目标包名 如果通用填.+
-    private static final String TargetPackageName = "com.tencent.mobileqq";
+    private static final String TargetPackageName = "com.tencent.mobileqq|com.tencent.tim";
     private static String currentHostAppPackageName;
 
     private static String ModuleApkPath;
@@ -37,7 +37,7 @@ public class HookEnv {
         HookEnv.hostAppContext = hostAppContext;
         PackageManager packageManager = hostAppContext.getPackageManager();
         try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(getTargetPackageName(), 0);
+            PackageInfo packageInfo = packageManager.getPackageInfo(hostAppContext.getPackageName(), 0);
             setVersionCode((int) packageInfo.getLongVersionCode());
             setVersionName(packageInfo.versionName);
         } catch (Exception e) {

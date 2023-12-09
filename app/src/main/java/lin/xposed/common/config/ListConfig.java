@@ -13,6 +13,9 @@ import lin.xposed.common.utils.FileUtils;
 import lin.xposed.hook.util.PathTool;
 import lin.xposed.hook.util.ToastTool;
 
+/**
+ * 采用JSON互转 JSON性能优秀开销小
+ */
 public class ListConfig<T> {
     private static String getPath() {
         return PathTool.getModuleDataPath() + "/data/";
@@ -31,10 +34,10 @@ public class ListConfig<T> {
         }
     }
 
-    public static <T> void setListToFile(String filePath, List<T> list) {
+    public static <T> void setListToFile(String fileName, List<T> list) {
         try {
             JSONArray json = new JSONArray(list.toArray());
-            FileUtils.writeTextToFile(getPath() + filePath, json.toString(), false);
+            FileUtils.writeTextToFile(getPath() + fileName, json.toString(), false);
         } catch (Exception e) {
             ToastTool.show(e);
         }

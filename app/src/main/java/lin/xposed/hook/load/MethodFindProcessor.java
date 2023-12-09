@@ -77,10 +77,14 @@ public class MethodFindProcessor {
                     sendMsgToDialog("当前处理的类 : " + hookItem.getClass().getName());
 
                     if (hookItem instanceof IMethodFinder iMethodFinder) {
-                        //start find method
-                        MethodFinder finder = new MethodFinder(hookItem.getClass(), dexFinder);
-                        iMethodFinder.startFind(finder);//收集想要查找的方法信息
-                        json.put(hookItem.getClass().getName(), getResult.invoke(finder));
+                        try {
+                            //start find method
+                            MethodFinder finder = new MethodFinder(hookItem.getClass(), dexFinder);
+                            iMethodFinder.startFind(finder);//收集想要查找的方法信息
+                            json.put(hookItem.getClass().getName(), getResult.invoke(finder));
+                        } catch (Exception e) {
+                            hookItem.getExceptionCollectionToolInstance().addException(e);
+                        }
                     }
                 }
                 sendMsgToDialog("所有方法查找完成 准备保存与重启");
@@ -119,6 +123,7 @@ public class MethodFindProcessor {
             if (hookItem instanceof IMethodFinder iMethodFinder) {
                 try {
                     //再运行一次方法查找器并进入方法得到期来让项可以得到方法
+                    if (methodData.isNull(hookItem.getClass().getName())) continue;//如果没有 可能是没找到方法
                     JSONObject classMethodData = methodData.getJSONObject(hookItem.getClass().getName());
                     MethodFinder finder = new MethodFinder(hookItem.getClass(), null);
                     loadMethod.invoke(finder, classMethodData);

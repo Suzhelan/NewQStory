@@ -14,7 +14,7 @@ public class HookTestUtils {
                     super.beforeHookedMethod(param);
                     CharSequence text = (CharSequence) param.args[0];
                     if (text == null) return;
-                    if (text.equals(str)) {
+                    if (String.valueOf(text).contains(str)) {
                         LogUtils.addRunLog(str + "_TextView", LogUtils.getCallStack());
                     }
                 }

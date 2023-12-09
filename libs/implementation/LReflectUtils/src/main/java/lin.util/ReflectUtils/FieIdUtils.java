@@ -1,10 +1,14 @@
 package lin.util.ReflectUtils;
 
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 反射字段工具
@@ -12,6 +16,30 @@ import java.util.List;
 public class FieIdUtils {
 
     private static final HashMap<String, Field> FIELD_CACHE = new HashMap<>();
+
+    /**
+     * 获取注解属性值
+     *
+     * @param annotation
+     * @param property
+     * @return
+     */
+    public static Object getAnnotationValue(Annotation annotation, String property) {
+        Object result = null;
+        if (annotation != null) {
+            InvocationHandler invo = Proxy.getInvocationHandler(annotation); //获取被代理的对象
+            Map map = null;
+            try {
+                map = getUnknownTypeField(invo, "memberValues");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (map != null) {
+                result = map.get(property);
+            }
+        }
+        return result;
+    }
 
     /**
      * 设置字段内容

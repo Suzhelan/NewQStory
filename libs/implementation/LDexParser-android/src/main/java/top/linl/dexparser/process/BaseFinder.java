@@ -19,6 +19,10 @@ public abstract class BaseFinder {
      */
     public void startFind(DexParser dexParser) {
         for (DexMethodId dexMethodId : dexParser.dexMethodIdsList) {
+            String methodName = dexParser.dexStringIdsList[dexMethodId.name_idx].getString(dexParser);
+            if (methodName.equals("<init>") || methodName.equals("<cinit>")) {
+                continue;
+            }
             startParserMethodId(dexParser, dexMethodId);
         }
     }
@@ -28,6 +32,10 @@ public abstract class BaseFinder {
 
     protected final void addMethodToResult(DexParser dexParser, DexMethodId dexMethodId) {
         result.add(getMethodJSON(dexParser, dexMethodId));
+    }
+
+    protected final ArrayList<String> getResult() {
+        return this.result;
     }
 
     protected <T> boolean checkListContain(List<T> list, T[] array) {

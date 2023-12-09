@@ -5,14 +5,10 @@ import com.google.auto.service.AutoService;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -35,86 +31,58 @@ import javax.tools.JavaFileObject;
 @SupportedSourceVersion(SourceVersion.RELEASE_17)//版本
 @SupportedAnnotationTypes("lin.xposed.hook.annotation.HookItem")//指定只处理哪个注解 如果要处理所有的注解填*
 public class HookItemAnnotationScanner extends AbstractProcessor {
-    private Map<String, String> AnnotatedList;
-
-    //获取该注解对象的属性值
-    public static Object getAnnotationValue(Annotation annotation, String property) {
-        Object result = null;
-        if (annotation != null) {
-            InvocationHandler invo = Proxy.getInvocationHandler(annotation); //获取被代理的对象
-            Map map = (Map) getFieldValue(invo, "memberValues");
-            if (map != null) {
-                result = map.get(property);
-            }
-        }
-        return result;
-    }
-
+    private ArrayList<String> classNameList = new ArrayList<>();
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
     }
 
-    public static <T> Object getFieldValue(T object, String property) {
-        if (object != null && property != null) {
-            Class<T> currClass = (Class<T>) object.getClass();
-
-            try {
-                Field field = currClass.getDeclaredField(property);
-                field.setAccessible(true);
-                return field.get(object);
-            } catch (NoSuchFieldException e) {
-                throw new IllegalArgumentException(currClass + " has no property: " + property);
-            } catch (IllegalArgumentException e) {
-                throw e;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
     private void addAsClassArray(StringBuilder builder) {
+        //按拼音排序
+        classNameList.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Collator.getInstance(Locale.CHINESE).compare(o1, o2);
+            }
+        });
         //写文件头
         builder.append("package " + AnnotationClassNameTools.CLASS_PACKAGE + ";\n\n");
-        //写必要依赖
         builder.append("import lin.xposed.hook.load.base.BaseHookItem;\n");
-        //写import(其实没有import全类名也可以导)
-        for (Map.Entry<String, String> entry : AnnotatedList.entrySet()) {
-            String entryKey = entry.getKey();
-            builder.append("import ").append(entryKey).append(";\n");
-        }
         builder.append("public class " + AnnotationClassNameTools.CLASS_NAME + " {\n\n");
 
         //array
-        builder.append("\tpublic static final BaseHookItem[] allHookItemClass = {\n\t\t\t");
-        for (Map.Entry<String, String> entry : AnnotatedList.entrySet()) {
-            builder.append("new ").append(entry.getKey()).append("(),\n\t\t\t");
-//            builder.append(entry.getKey()).append(".class,\n\t\t\t");
+        builder.append("\tprivate static final BaseHookItem[] ALL_HOOK_ITEM_LIST = new BaseHookItem[" + classNameList.size() + "];\n\n");
+        //单个方法无法存放太多字符串 因此先拆分初始化方法
+        for (int i = 0; i < classNameList.size(); i++) {
+            String methodName = "setPathForItem_" + classNameList.get(i).replace('.', '_');
+            builder.append("\tprivate void ").append(methodName).append("() {\n");
+            String packageName = this.classNameList.get(i);
+            builder.append("\t\tALL_HOOK_ITEM_LIST[" + i + "] = new ").append(packageName).append("();\n");
+            String itemUiPath = ScanFile.getItemPath(ScanFile.findFile(packageName));
+            builder.append("\t\tALL_HOOK_ITEM_LIST[" + i + "]").append(".initPath(\"").append(itemUiPath).append("\");\n");
+            builder.append("\t}\n");
         }
-        builder.append("};");
+        //然后再汇总调用
+        builder.append("\tpublic static BaseHookItem[] initAndGetHookItemList() {\n");
+        builder.append("\t\t").append(AnnotationClassNameTools.CLASS_NAME).append(" ").append("instance = new ").append(AnnotationClassNameTools.CLASS_NAME).append("();\n");
+        for (int i = 0; i < classNameList.size(); i++) {
+            //采用实例调用 这样可以不用写这么多静态方法以节省jvm方法区内存
+            String methodName = "setPathForItem_" + classNameList.get(i).replace('.', '_');
+            builder.append("\t\tinstance.");
+            builder.append(methodName).append("();\n");
+        }
+        builder.append("\t\treturn ALL_HOOK_ITEM_LIST;\n");
+        builder.append("\t}");
         //array end
 
         //build time
-        builder.append("\n\tpublic static final String BUILD_TIME =\"").append(getTime()).append("\";");
+        builder.append("\n\tpublic static final String BUILD_TIME =\"").append(ScanFile.getTime()).append("\";");
 
         builder.append("\n}\n");
 
     }
 
-
-    public static String getTime() {
-        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd"),
-                df3 = new SimpleDateFormat("HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        String TimeMsg1 = df1.format(calendar.getTime()),
-                TimeMsg3 = df3.format(calendar.getTime());
-        if (TimeMsg1.contains("-0")) {
-            TimeMsg1 = TimeMsg1.replace("-0", "-");
-        }
-        return TimeMsg1 + " " + TimeMsg3;
-    }
 
     /**
      * @param annotations 所有注解
@@ -124,11 +92,10 @@ public class HookItemAnnotationScanner extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         System.out.println("[start] Start building annotated Hook project class index");
-
         StringBuilder builder = new StringBuilder();
 
         for (TypeElement element : annotations) {
-            AnnotatedList = getAnnotatedClassList(element, roundEnv);
+            classNameList = initAnnotatedClassList(element, roundEnv);
         }
         addAsClassArray(builder);
 
@@ -146,33 +113,28 @@ public class HookItemAnnotationScanner extends AbstractProcessor {
         return true;
     }
 
-    private Map<String, String> getAnnotatedClassList(TypeElement elements,RoundEnvironment roundEnv) {
-        HashMap<String, String> map = new HashMap<>();
+    private ArrayList<String> initAnnotatedClassList(TypeElement elements, RoundEnvironment roundEnv) {
+        ArrayList<String> packageNameList = new ArrayList<>();
         // 获取所有被该注解 标记过的实例
         Set<? extends Element> typeElements = roundEnv.getElementsAnnotatedWith(elements);
 
         for (Element element : typeElements) {
             //获取被注解的成员变量
             TypeElement typeElement = (TypeElement) element;
-            try {
-                Annotation annotation = typeElement.getAnnotation((Class<? extends Annotation>) Class.forName("lin.xposed.hook.annotation.HookItem"));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
             //获取全类名
             String className = typeElement.getQualifiedName().toString();
            /* Annotation itemPathAnnotation = annotatedElement.getAnnotations()[0];
             String itemPath = (String) getAnnotationValue(itemPathAnnotation, "value");
             System.out.println(itemPath);*/
             /*//获取被注解元素的包名
-            String packageName = element.getPackageOf(element).getQualifiedName().toString();
+            String classNameList = element.getPackageOf(element).getQualifiedName().toString();
             //取到这个注解元素的包
-            String packageName = element.getEnclosingElement().toString();
+            String classNameList = element.getEnclosingElement().toString();
             //获取并拼接被注解的类名
-            String className = packageName + "." + element.getSimpleName();*/
+            String className = classNameList + "." + element.getSimpleName();*/
             System.out.println("[HookItem]" + className);
-            map.put(className, null);
+            packageNameList.add(className);
         }
-        return map;
+        return packageNameList;
     }
 }

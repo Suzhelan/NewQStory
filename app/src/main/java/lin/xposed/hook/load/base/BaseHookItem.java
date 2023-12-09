@@ -49,7 +49,7 @@ public abstract class BaseHookItem {
     /*
      * 初始化项目路径
      */
-    public final void initItemPath(String path) {
+    public final void initPath(String path) {
         this.itemPath = path;
     }
 

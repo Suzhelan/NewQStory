@@ -11,12 +11,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import lin.app.main.ModuleBuildInfo;
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
 import lin.util.ReflectUtils.ReflectException;
 import lin.xposed.common.config.SimpleConfig;
 import lin.xposed.common.utils.FileUtils;
 import lin.xposed.hook.HookEnv;
-import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.BaseHookItem;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 import lin.xposed.hook.util.LogUtils;
@@ -35,21 +33,14 @@ public class HookItemLoader {
     private static final AtomicBoolean methodDataUpdate = new AtomicBoolean();
 
     static {
-
         //扫描hook类
         try {
             ClassLoader classLoader = HookItemLoader.class.getClassLoader();
             if (classLoader == null)
                 throw new ReflectException("HookItemLoader.class.getClassLoader() == null");
             Class<?> hookItemNameClass = classLoader.loadClass(AnnotationClassNameTools.getClassName());
-            BaseHookItem[] baseHookItemList = FieIdUtils.getStaticFieId(hookItemNameClass, "allHookItemClass", BaseHookItem[].class);
+            BaseHookItem[] baseHookItemList = (BaseHookItem[]) hookItemNameClass.getMethod("initAndGetHookItemList").invoke(null);
             for (BaseHookItem baseHookItem : baseHookItemList) {
-                //获取注解和信息并初始化 GetAnnotationInfo and initItemPath
-                HookItem annotation = baseHookItem.getClass().getAnnotation(HookItem.class);
-                String itemPath = annotation.value();
-                baseHookItem.initItemPath(itemPath);
-                baseHookItem.setHasUiPath(annotation.hasPath());
-
                 HookInstance.put(baseHookItem.getClass(), baseHookItem);
             }
         } catch (Exception ignored) {
@@ -131,6 +122,7 @@ public class HookItemLoader {
             try {
                 dataList = new JSONObject(FileUtils.readFileText(getDataPath()));
             } catch (Exception e) {
+                //如果配置出现修改导致出错
                 saveData(null);
                 LogUtils.addError(e);
                 ToastTool.show("[QStory]加载设置失败qwq " + e);

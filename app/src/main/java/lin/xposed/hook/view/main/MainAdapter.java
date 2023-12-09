@@ -26,7 +26,6 @@ import lin.xposed.common.utils.ViewUtils;
 import lin.xposed.hook.load.HookItemLoader;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 import lin.xposed.hook.util.LogUtils;
-import lin.xposed.hook.util.ToastTool;
 import lin.xposed.hook.view.main.fragment.ItemFragment;
 import lin.xposed.hook.view.main.fragment.SettingViewFragment;
 import lin.xposed.hook.view.main.itemview.base.DefaultItemView;
@@ -197,7 +196,6 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         try {
                             hookItem.loadHook(ClassUtils.getHostLoader());
                         } catch (Exception e) {
-                            ToastTool.show(e);
                             hookItem.getExceptionCollectionToolInstance().addException(e);
                             itemViewHolder.leftTextView.setTextColor(context.getColor(R.color.蔷薇色));
                         }
