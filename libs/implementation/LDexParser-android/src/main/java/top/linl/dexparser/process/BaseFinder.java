@@ -34,7 +34,7 @@ public abstract class BaseFinder {
         result.add(getMethodJSON(dexParser, dexMethodId));
     }
 
-    protected final ArrayList<String> getResult() {
+    public final ArrayList<String> getResult() {
         return this.result;
     }
 

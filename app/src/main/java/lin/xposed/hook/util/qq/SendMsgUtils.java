@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.ConstructorUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.util.ToastTool;
 
@@ -63,55 +62,4 @@ public class SendMsgUtils {
                         }));*/
     }
 
-    /**
-     * 获取好友聊天对象
-     */
-    public static Object getFriendContact(String uin) {
-        return getContact(1, uin);
-    }
-
-    /**
-     * 获取群聊聊天对象
-     */
-    public static Object getGroupContact(String uin) {
-        return getContact(2, uin);
-    }
-
-    /**
-     * @param type    联系人类型 2是群聊 1是好友
-     * @param peerUid 正常的QQ号/群号
-     */
-    public static Object getContact(int type, String peerUid) {
-        Class<?> aClass = ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.Contact");
-        try {
-            return ConstructorUtils.newInstance(aClass, new Class[]{int.class, String.class, String.class}, type, (type != 2 && type != 4 && isNumeric(peerUid)) ? QQEnvTool.getUidFromUin(peerUid) : peerUid, "");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Object getContact(int type, String peerUid, String guildId) {
-        Class<?> aClass = ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.Contact");
-        try {
-            return ConstructorUtils.newInstance(aClass, new Class[]{int.class, String.class, String.class}, type, (type != 2 && type != 4 && isNumeric(peerUid)) ? QQEnvTool.getUidFromUin(peerUid) : peerUid, guildId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Object getAIOContact(int chatType, String peerUid, String guildId, String nick) {
-        try {
-            return ConstructorUtils.newInstance(CommonClass.getAIOContactClass(), new Class[]{int.class, String.class, String.class, String.class}, chatType, (chatType != 2 && chatType != 4 && isNumeric(peerUid)) ? QQEnvTool.getUidFromUin(peerUid) : peerUid, guildId, nick);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static boolean isNumeric(String str) {
-        for (int i = str.length(); --i >= 0; ) {
-            int chr = str.charAt(i);
-            if (chr < 48 || chr > 57) return false;
-        }
-        return true;
-    }
 }

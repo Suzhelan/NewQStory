@@ -34,6 +34,13 @@ public class MethodTool {
         return methodTool;
     }
 
+    public static MethodTool obj(Object runtimeObject) {
+        MethodTool methodTool = new MethodTool();
+        methodTool.targetMethodInfo = new TargetMethodInfo();
+        methodTool.targetMethodInfo.findClass = runtimeObject.getClass();
+        return methodTool;
+    }
+
     /**
      * 构建方法签名
      *
@@ -66,7 +73,6 @@ public class MethodTool {
         return this;
     }
 
-
     public <T> T call(Object runtimeObject, Object... params) {
         try {
             Method method = get();
@@ -98,10 +104,12 @@ public class MethodTool {
         for (Class<?> currentFindClass = target.findClass == null ? ClassUtils.getClass(target.findClassName) : target.findClass; currentFindClass != Object.class; currentFindClass = currentFindClass.getSuperclass()) {
             MethodFor:
             for (Method method : currentFindClass.getDeclaredMethods()) {
-                if ((method.getName().equals(target.methodName) || target.methodName == null) && (method.getReturnType().equals(target.returnType) || target.returnType == null)) {
+                if ((method.getName().equals(target.methodName) || target.methodName == null)
+                        && (method.getReturnType().equals(target.returnType) || target.returnType == null)) {
                     Class<?>[] methodParams = method.getParameterTypes();
                     if (methodParams.length == target.methodParams.length) {
                         for (int i = 0; i < methodParams.length; i++) {
+                            if (target.methodParams[i] == Object.class) continue;
                             if (!Objects.equals(methodParams[i], target.methodParams[i]))
                                 continue MethodFor;
                             if (!CheckClassType.CheckClass(methodParams[i], target.methodParams[i]))
