@@ -46,14 +46,6 @@ public abstract class BaseSwitchFunctionHookItem extends BaseHookItem {
         this.enabled = enabled;
     }
 
-    /**
-     * 如果功能想要自定义Item点击事件时重写此方法
-     *
-     * @return 点击事件
-     */
-    public View.OnClickListener getOnClick() {
-        return null;
-    }
 
 
     /**

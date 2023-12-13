@@ -19,17 +19,22 @@ public class SessionApi extends BaseHookItem implements IMethodFinder {
     /**
      * no qqnt
      */
-    private static Object currentSessionInfo;
+    private static Object currentSessionInfo, AppInterface;
     /**
      * is qqnt
      */
     private static Object currentAIOContact;
+
     String methodId = "AIO_doOnCreate_initUI";
     Method doOnAIOCreateMethod;
 
     public static Object getSession() {
         if (QQVersion.isQQNT()) return currentAIOContact;
         return currentSessionInfo;
+    }
+
+    public static Object getAppInterface() {
+        return AppInterface;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class SessionApi extends BaseHookItem implements IMethodFinder {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Object ChatPie = param.thisObject;
-//                    HostEnv.AppInterface = FieIdUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"));
+                    AppInterface = FieIdUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"));
                     currentSessionInfo = FieIdUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"));
                 }
             });

@@ -21,10 +21,6 @@ public class HookEnv {
         return TargetPackageName;
     }
 
-    public static String getCurrentHostPackageName() {
-        return getCurrentHostAppPackageName();
-    }
-
     public static void setCurrentHostAppPackageName(String currentHostAppPackageName) {
         HookEnv.currentHostAppPackageName = currentHostAppPackageName;
     }

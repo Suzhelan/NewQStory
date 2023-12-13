@@ -4,21 +4,28 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.util.ToastTool;
 
-public class SendMsgUtils {
+public class QQNTSendMsgUtils {
+    public static void sendPic(Object contact, String picUrl) {
+        ArrayList element = new ArrayList();
+        element.add(CreateElement.createPicElement(picUrl));
+        sendMsg(contact, element);
+    }
 
-    private static final ExecutorService service = Executors.newSingleThreadExecutor();
+    public static void sendVoice(Object contact, String voiceFile) {
+        ArrayList element = new ArrayList();
+        element.add(CreateElement.createPttElement(voiceFile));
+        sendMsg(contact, element);
+    }
 
     /**
      * 发送一条消息
      *
-     * @param contact     发送联系人 通过 getContact方法创建
+     * @param contact     发送联系人 通过 {@link SessionUtils} 类创建
      * @param elementList 元素列表 通过 {@link CreateElement}创建元素
      */
     public static void sendMsg(Object contact, ArrayList elementList) {
@@ -39,27 +46,6 @@ public class SendMsgUtils {
                 return null;
             }
         }));
-
-
-
-        /*int random = (int) Math.random();
-        Object c = XposedHelpers.callStaticMethod(ClassUtils.getClass("com.tencent.qqnt.msg.g"), "c");
-        XposedHelpers.callMethod(c, "sendMsg", new Class[]{
-                        long.class,
-                        ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.Contact"),
-                        ArrayList.class,
-                        HashMap.class,
-                        ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.IOperateCallback")
-                },
-                random, contact, elementList, new HashMap<>(),
-                //代理此接口
-                Proxy.newProxyInstance(ClassUtils.getHostLoader(),
-                        new Class[]{ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.IOperateCallback")}, new InvocationHandler() {
-                            @Override
-                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                                return null;
-                            }
-                        }));*/
     }
 
 }

@@ -26,5 +26,4 @@ dependencies {
     def appcompat_version = "1.7.0-alpha02"
     //安卓依赖
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'com.github.Suzhelan:LDexParser:v0.4'
 }

@@ -263,7 +263,8 @@ public class FileUtils {
                 throw new IOException("create File Fail :" + target.getAbsolutePath());
             }
         }
-        try (inputStream; BufferedInputStream sourceFile = new BufferedInputStream(inputStream); BufferedOutputStream destStream = new BufferedOutputStream(new FileOutputStream(target))) {
+        try (inputStream; BufferedInputStream sourceFile = new BufferedInputStream(inputStream);
+             BufferedOutputStream destStream = new BufferedOutputStream(new FileOutputStream(target))) {
             byte[] bytes = new byte[BYTE_SIZE];
             while ((sourceFile.read(bytes) != -1)) {
                 destStream.write(bytes);

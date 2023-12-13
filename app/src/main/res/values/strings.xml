@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">QStory</string>
+    <string name="save_voice">保存语音</string>
+    <string name="SaveNoName">不输入名称将以时间命名</string>
+    <string name="button_close">取消</string>
+    <string name="button_yes_sava">保存</string>
 </resources>

@@ -14,6 +14,7 @@ public class QQVersion {
     public static final int QQ_8_9_73 = 4416;
     public static final int QQ_8_9_78 = 4548;
     public static final int QQ_8_9_90 = 4938;
+    public static final int QQ_8_9_93 = 5028;
     private static AtomicBoolean isQQNT;
 
     /* Q_8_9_70(4330),

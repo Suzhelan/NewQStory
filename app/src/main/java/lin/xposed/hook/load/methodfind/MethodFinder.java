@@ -14,25 +14,22 @@ import lin.util.ReflectUtils.MethodUtils;
 import top.linl.dexparser.DexFinder;
 
 public class MethodFinder {
-    private final Class<?> hookItem;
     private final HashMap<String, Method> container = new HashMap<>();
     private final DexFinder dexFinder;
 
-    public MethodFinder(Class<?> hookItem, DexFinder dexFinder) {
-        this.hookItem = hookItem;
+    public MethodFinder(DexFinder dexFinder) {
         this.dexFinder = dexFinder;
     }
 
     public Method[] findMethodString(String str) throws Exception {
-        Method[] methods = dexFinder.findMethodString(str).toArray(new Method[0]);
-        return methods;
+        return dexFinder.findMethodString(str).toArray(new Method[0]);
     }
 
-    public Method getMethod(String methodId) {
+    public final Method getMethod(String methodId) {
         return container.get(methodId);
     }
 
-    public void putMethod(String methodId, Method method) {
+    public final void putMethod(String methodId, Method method) {
         container.put(methodId, method);
     }
 

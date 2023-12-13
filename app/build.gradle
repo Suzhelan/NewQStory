@@ -40,7 +40,7 @@ android {
         minSdk 28
         //noinspection ExpiredTargetSdkVersion
         targetSdk 29
-        versionCode 66
+        versionCode 67
         versionName parseVersionCode(versionCode)
     }
 
@@ -108,6 +108,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     implementation 'com.github.megatronking.stringfog:xor:5.0.0'
+
+    implementation 'net.bytebuddy:byte-buddy-android:1.14.10'
 
     //防止kt版本不匹配编译异常 (虽然没用到kt语言)
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.8.20-RC'))

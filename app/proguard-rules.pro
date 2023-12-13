@@ -23,9 +23,10 @@
 -keep class lin.xposed.hook.** {*;}
 -keep class lin.xposed.view.main.** {*;}
 -keep class * extends android.app.Activity {*;}
-#-keep @lin.xposed.hook.annotation.HookItem class * {*;}
+-keep @lin.xposed.hook.annotation.HookItem class * {*;}
 -keep class lin.xposed.R {*;}
 -keep class lin.app.main.LinStringForImpl {*;}
+#-keep class net.bytebuddy.** {*;}
 
 -keepclassmembers enum * {
     public static **[] values();
@@ -39,6 +40,6 @@
 
 -dontwarn javax.**
 -dontwarn java.**
-
+-dontwarn net.bytebuddy.**
 
 

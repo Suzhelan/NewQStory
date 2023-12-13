@@ -60,7 +60,7 @@ public class ViewUtils {
          * 创建背景
          *
          * @param color  填充色
-         * @param radius 圆角角度
+         * @param radius 圆角角度 默认px
          */
         public static GradientDrawable createBaseBackground(@ColorInt int color, int radius) {
             return createRoundedBackground(color, 0, 0, radius);
@@ -83,7 +83,7 @@ public class ViewUtils {
             //设置线条粗心和颜色,px
             if (strokeColor != 0 && strokeWidth != 0) radiusBg.setStroke(strokeWidth, strokeColor);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                radiusBg.setInnerRadius(radius);
+                radiusBg.setCornerRadius(radius);
             }
             return radiusBg;
         }

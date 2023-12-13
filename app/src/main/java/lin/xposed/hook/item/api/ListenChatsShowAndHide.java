@@ -7,12 +7,12 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
-import lin.xposed.hook.load.base.BaseHookItem;
+import lin.xposed.hook.load.base.ApiHookItem;
 import lin.xposed.hook.load.methodfind.IMethodFinder;
 import lin.xposed.hook.load.methodfind.MethodFinder;
 
 @HookItem("ListenToChatWindowsAsTheyAppearAndClose")
-public class ListenChatsShowAndHide extends BaseHookItem implements IMethodFinder {
+public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder {
     private static final ArrayList<OnChatShowListener> onChatShowListenerList = new ArrayList<>();
     private final String showMethodID = "chat_show_method";
     private final String hideMethodID = "chat_hide_method";
@@ -20,7 +20,7 @@ public class ListenChatsShowAndHide extends BaseHookItem implements IMethodFinde
     private Method showMethod, hideMethod;
 
     public static void addOnChatShowListener(OnChatShowListener chatShowListener) {
-        onChatShowListenerList.add(chatShowListener);
+        if (chatShowListener != null) onChatShowListenerList.add(chatShowListener);
     }
 
     public static boolean removeChatShowListener(OnChatShowListener onChatShowListener) {
@@ -29,7 +29,7 @@ public class ListenChatsShowAndHide extends BaseHookItem implements IMethodFinde
 
     @Override
     public void loadHook(ClassLoader classLoader) throws Exception {
-        //chat start show time
+        //when the chat is show
         XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -38,7 +38,7 @@ public class ListenChatsShowAndHide extends BaseHookItem implements IMethodFinde
                 }
             }
         });
-        //chat hide time
+        //when the chat is hidden
         XposedBridge.hookMethod(hideMethod, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -79,6 +79,7 @@ public class ListenChatsShowAndHide extends BaseHookItem implements IMethodFinde
         showMethod = finder.getMethod(showMethodID);
         hideMethod = finder.getMethod(hideMethodID);
     }
+
 
     public interface OnChatShowListener {
         void show();

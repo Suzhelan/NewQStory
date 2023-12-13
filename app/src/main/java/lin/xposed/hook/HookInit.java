@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
@@ -41,28 +40,18 @@ public class HookInit {
     };
 
     public static void initMainHook() throws Exception {
-
-        //判断读写权限
-        if (!verifyStoragePermissions()) {
-            XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    dialog();
-                }
-            });
-        }
         //方法数据已过期 开始查找方法
-        else if (!HookItemLoader.methodDataIsOutOfDate()) {
-            //需要有activity才能展示查找方法的动画 所以等activity创建再开始查找
-            XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Activity activity = (Activity) param.thisObject;
-                    ActivityTools.injectResourcesToContext(activity);
-                    MethodFindProcessor.startFindAllMethod(activity);
-                }
-            });
-        } else {
+       if (!HookItemLoader.methodDataIsOutOfDate()) {
+           //需要有activity才能展示查找方法的动画 所以等activity创建再开始查找
+           XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
+               @Override
+               protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                   Activity activity = (Activity) param.thisObject;
+                   ActivityTools.injectResourcesToContext(activity);
+                   MethodFindProcessor.startFindAllMethod(activity);
+               }
+           });
+       } else {
             //正常没有过期 扫描本地方法和加载Hook
             MethodFindProcessor.scanMethod();
             HookItemLoader.initHookItem();
@@ -78,6 +67,7 @@ public class HookInit {
         File nomedia = new File(PathTool.getModuleDataPath() + "/.nomedia");
         if (nomedia.exists()) nomedia.delete();
         try {
+            if (nomedia.getParentFile().exists()) nomedia.getParentFile().mkdirs();
             return nomedia.createNewFile();
         } catch (IOException e) {
             return false;

@@ -4,6 +4,7 @@ package lin.xposed.hook.load.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.robv.android.xposed.XposedBridge;
 import lin.xposed.BuildConfig;
 import lin.xposed.hook.util.LogUtils;
 
@@ -85,6 +86,9 @@ public abstract class BaseHookItem {
             if (this.ErrorList == null) this.ErrorList = new ArrayList<>();
             this.ErrorList.add(exception);
             //如果是debug则直接写到文件
+            if (!BuildConfig.DEBUG) {
+                XposedBridge.log(exception);
+            }
             if (BuildConfig.DEBUG) LogUtils.addError(exception);
         }
 

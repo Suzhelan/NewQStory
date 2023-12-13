@@ -3,6 +3,8 @@ package lin.xposed.hook.util;
 import android.content.Context;
 import android.os.Environment;
 
+import java.io.File;
+
 import lin.xposed.common.config.GlobalConfig;
 import lin.xposed.hook.HookEnv;
 
@@ -18,7 +20,13 @@ public class PathTool {
     }
 
     public static String getModuleDataPath() {
-        return getDataSavePath(HookEnv.getHostAppContext(),"QStory");
+        String path = getStorageDirectory() + "/Android/data/" + HookEnv.getCurrentHostAppPackageName() + "/QStory";
+        new File(path).mkdirs();
+        return path;
+    }
+
+    public static String getModuleCachePath(String dirName) {
+        return getModuleDataPath() + "/Cache/" + dirName;
     }
 
     public static void updateDataPath(String path) {

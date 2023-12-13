@@ -16,7 +16,7 @@ public class QQEnvTool {
     @SuppressLint("DiscouragedApi")
     public static int findResId(String idName) {
         Resources resources = HookEnv.getHostAppContext().getResources();
-        return resources.getIdentifier(idName, "id", HookEnv.getCurrentHostPackageName());
+        return resources.getIdentifier(idName, "id", HookEnv.getCurrentHostAppPackageName());
     }
 
     /**

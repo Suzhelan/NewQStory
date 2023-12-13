@@ -79,7 +79,7 @@ public class MethodFindProcessor {
                     if (hookItem instanceof IMethodFinder iMethodFinder) {
                         try {
                             //start find method
-                            MethodFinder finder = new MethodFinder(hookItem.getClass(), dexFinder);
+                            MethodFinder finder = new MethodFinder(dexFinder);
                             iMethodFinder.startFind(finder);//收集想要查找的方法信息
                             json.put(hookItem.getClass().getName(), getResult.invoke(finder));
                         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class MethodFindProcessor {
                     //再运行一次方法查找器并进入方法得到期来让项可以得到方法
                     if (methodData.isNull(hookItem.getClass().getName())) continue;//如果没有 可能是没找到方法
                     JSONObject classMethodData = methodData.getJSONObject(hookItem.getClass().getName());
-                    MethodFinder finder = new MethodFinder(hookItem.getClass(), null);
+                    MethodFinder finder = new MethodFinder(null);
                     loadMethod.invoke(finder, classMethodData);
                     iMethodFinder.getMethod(finder);
                 } catch (Exception e) {
