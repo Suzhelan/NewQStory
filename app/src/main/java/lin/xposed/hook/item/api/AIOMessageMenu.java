@@ -24,7 +24,6 @@ import lin.xposed.hook.load.methodfind.MethodFinder;
 public class AIOMessageMenu extends ApiHookItem implements IMethodFinder {
     private static Method method;
     private final String methodId = "Menu_Item_Class";
-
     /**
      * 创建消息长按菜单元素
      *
@@ -52,7 +51,10 @@ public class AIOMessageMenu extends ApiHookItem implements IMethodFinder {
 
                     .method(ElementMatchers.named("a")).intercept(FixedValue.value(783492382))
 
-                    .make().load(declaringClass.getClassLoader(), new AndroidClassLoadingStrategy.Wrapping(HookEnv.getHostAppContext().getDir("generated", Context.MODE_PRIVATE))).getLoaded();
+                    .make()
+                    .load(declaringClass.getClassLoader(),
+                            new AndroidClassLoadingStrategy.Wrapping(HookEnv.getHostAppContext().getDir("generated", Context.MODE_PRIVATE)))
+                    .getLoaded();
         } else {
             menuItemClass = new ByteBuddy().subclass(declaringClass)
                     //text
@@ -62,7 +64,10 @@ public class AIOMessageMenu extends ApiHookItem implements IMethodFinder {
                     //click
                     .method(ElementMatchers.is(method)).intercept(MethodCall.call(callable))
                     //build
-                    .make().load(declaringClass.getClassLoader(), new AndroidClassLoadingStrategy.Wrapping(HookEnv.getHostAppContext().getDir("generated", Context.MODE_PRIVATE))).getLoaded();
+                    .make()
+                    .load(declaringClass.getClassLoader(),
+                            new AndroidClassLoadingStrategy.Wrapping(HookEnv.getHostAppContext().getDir("generated", Context.MODE_PRIVATE))
+                    ).getLoaded();
         }
         try {
             return menuItemClass.getDeclaredConstructor(msgClass).newInstance(aioMsg);

@@ -11,7 +11,7 @@ android {
         minSdk 22
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+        consumerProguardFiles "consumer-rules.pro"//将规则应用到主模块
     }
 
     buildTypes {

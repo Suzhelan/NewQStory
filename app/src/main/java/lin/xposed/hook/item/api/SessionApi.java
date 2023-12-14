@@ -9,12 +9,12 @@ import lin.util.ReflectUtils.FieIdUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
-import lin.xposed.hook.load.base.BaseHookItem;
+import lin.xposed.hook.load.base.ApiHookItem;
 import lin.xposed.hook.load.methodfind.IMethodFinder;
 import lin.xposed.hook.load.methodfind.MethodFinder;
 
 @HookItem(value = "Session_info_find_init", hasPath = false)
-public class SessionApi extends BaseHookItem implements IMethodFinder {
+public class SessionApi extends ApiHookItem implements IMethodFinder {
 
     /**
      * no qqnt
@@ -25,8 +25,8 @@ public class SessionApi extends BaseHookItem implements IMethodFinder {
      */
     private static Object currentAIOContact;
 
-    String methodId = "AIO_doOnCreate_initUI";
-    Method doOnAIOCreateMethod;
+    private final String methodId = "AIO_doOnCreate_initUI";
+    private Method doOnAIOCreateMethod;
 
     public static Object getSession() {
         if (QQVersion.isQQNT()) return currentAIOContact;
@@ -35,11 +35,6 @@ public class SessionApi extends BaseHookItem implements IMethodFinder {
 
     public static Object getAppInterface() {
         return AppInterface;
-    }
-
-    @Override
-    public boolean isLoadedByDefault() {
-        return true;
     }
 
     @Override

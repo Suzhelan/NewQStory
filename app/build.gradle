@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
 }
@@ -14,9 +13,9 @@ stringfog {
     // 可选：StringFog会自动尝试获取packageName，如果遇到获取失败的情况，可以显式地指定。
     packageName 'lin.xposed'
     // 可选：加密开关，默认开启。
-    enable true
+    enable false
     // 可选：指定需加密的代码包路径，可配置多个，未指定将默认全部加密。
-    fogPackages = ['lin',"top.linl"]
+    fogPackages = ['lin', "top.linl"]
     // 可选（3.0版本新增）：指定密钥生成器，默认使用长度8的随机密钥（每个字符串均有不同随机密钥）,
     // 也可以指定一个固定的密钥：HardCodeKeyGenerator("This is a key")
     kg new HardCodeKeyGenerator("LIN")
@@ -26,7 +25,6 @@ stringfog {
 }
 
 
-String buildType
 android {
     // 注意请加上此配置
     buildFeatures {
@@ -46,17 +44,14 @@ android {
 
     buildTypes {
         release {
-            buildType = "release"
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            buildType = "debug"
-        }
+        debug {}
     }
 
     aaptOptions {
-        additionalParameters '--allow-reserved-package-id','--package-id','0x28'
+        additionalParameters '--allow-reserved-package-id', '--package-id', '0x28'
     }
 
 
@@ -70,17 +65,15 @@ android {
 
     android.applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
-            outputFileName = "QStory_${versionName}.apk"
+            outputFileName = "QStory_${versionName}-" + getBuildType().getName() + ".apk"
         }
     }
 
     sourceSets {
         main {
-            res.srcDirs = [
-                    'src/main/res/dialog',
-                    'src/main/res/item',
-                    'src/main/res'
-            ]
+            res.srcDirs = ['src/main/res/dialog',
+                           'src/main/res/item',
+                           'src/main/res']
         }
     }
 }
@@ -105,16 +98,16 @@ dependencies {
     //安卓依赖
     //noinspection GradleDependency,NotInterpolated
     implementation 'androidx.appcompat:appcompat:$appcompat_version'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
 
-    implementation 'com.github.megatronking.stringfog:xor:5.0.0'
+    implementation 'com.github.megatronking.stringfog:xor:5.0.0'//字符串混淆库
 
-    implementation 'net.bytebuddy:byte-buddy-android:1.14.10'
+    implementation 'net.bytebuddy:byte-buddy-android:1.14.10'//动态字节库
 
     //防止kt版本不匹配编译异常 (虽然没用到kt语言)
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.8.20-RC'))
 
-    implementation files('libs/bsh-2.1.1.jar')
+    implementation files('libs/bsh-2.1.1.jar')//beanShell
     compileOnly files('libs/XposedBridgeApi-82.jar')
 
     def libs = new File(rootDir.getPath() + "/libs/implementation")
