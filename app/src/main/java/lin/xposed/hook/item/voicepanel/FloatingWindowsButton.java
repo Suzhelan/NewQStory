@@ -20,6 +20,7 @@ import lin.xposed.common.config.SimpleConfig;
 import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.common.utils.ScreenParamUtils;
 import lin.xposed.common.utils.ViewUtils;
+import lin.xposed.hook.item.AddVoiceFloatingWindow;
 
 
 //添加悬浮窗
@@ -36,6 +37,7 @@ public class FloatingWindowsButton {
     @SuppressLint("ClickableViewAccessibility")
     public synchronized static void Display(boolean isShow) {
         Activity activity = ActivityTools.getActivity();
+        if (activity == null) return;
         ActivityTools.injectResourcesToContext(activity);
         try {
             if (isShow) {

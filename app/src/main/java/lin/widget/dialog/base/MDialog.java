@@ -36,7 +36,6 @@ public class MDialog extends Dialog {
 
     @Override
     public void show() {
-        //如果从大小从未修改就展示前自动修改
         super.show();
     }
 

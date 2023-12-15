@@ -41,9 +41,8 @@
 
 
 -keep class lin.xposed.hook.InitInject {*;}
--keep class lin.xposed.hook.load.* {*;}
+-keep class lin.xposed.hook.load.** {*;}
 -keep class lin.xposed.hook.util.qq.** {*;}
-
 -keep class * extends lin.xposed.hook.load.base.BaseHookItem {*;}
 
 #-keep @lin.xposed.hook.annotation.HookItem class * {*;}

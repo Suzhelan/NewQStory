@@ -20,11 +20,16 @@ import lin.xposed.hook.HookEnv;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.item.api.AIOMessageMenu;
-import lin.xposed.hook.item.voicepanel.VoiceTools;
+import lin.xposed.hook.item.voicepanel.VoiceViewTools;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 
 @HookItem("辅助功能/聊天/保存语音")
 public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
+
+    @Override
+    public String getTips() {
+        return "长按一条语音,可能还没适配 8.9.9.6及以上版本";
+    }
 
     /**
      * 此方法可以注入所有消息类型的长按菜单中 但是暂时不需要
@@ -62,7 +67,10 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
             //获取父类的get结果方法 父类是抽象类方法有唯一性 下一步再利用父类查找到的方法查找具体实现类中的方法 方法签名 public final T Z0() 可以得知该方法不会被子类重写
             Method superGetResultListMethod = MethodTool.find(baseMenuClass).returnType(List.class).get();
             //通过父类查找具体子实现类的方法
-            Method getVoiceMessageMenuMethod = MethodTool.find(pttMenuClass).name(superGetResultListMethod.getName()).returnType(List.class).get();
+            Method getVoiceMessageMenuMethod = MethodTool.find(pttMenuClass)
+                    .name(superGetResultListMethod.getName())
+                    .returnType(List.class)
+                    .get();
 
             hookAfter(getVoiceMessageMenuMethod, new HookBehavior() {
                 @Override
@@ -72,7 +80,7 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
                         Class<?> pttElementClass = classLoader.loadClass("com.tencent.qqnt.kernel.nativeinterface.PttElement");
                         Object pttElement = MethodTool.find(pttAIOMsgItem.getClass()).returnType(pttElementClass).call(pttAIOMsgItem);
                         String pttFilePath = MethodTool.find(pttElement.getClass()).name("getFilePath").returnType(String.class).call(pttElement);
-                        VoiceTools.createSaveVoiceDialog(ActivityTools.getActivity(), pttFilePath);
+                        VoiceViewTools.createSaveVoiceDialog(ActivityTools.getActivity(), pttFilePath);
                         return null;
                     });
                     List resultList = (List) param.getResult();
@@ -103,7 +111,7 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
                 if (InvokeID == 4192) {
                     String PTTPath = MethodUtils.callNoParamsMethod(chatMsg, "getLocalFilePath", String.class);
                     //保存语音
-                    VoiceTools.createSaveVoiceDialog(mContext, PTTPath);
+                    VoiceViewTools.createSaveVoiceDialog(mContext, PTTPath);
                 }
             });
         }

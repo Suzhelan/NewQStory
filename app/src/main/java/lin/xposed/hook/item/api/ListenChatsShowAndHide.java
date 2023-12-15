@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.ApiHookItem;
@@ -29,32 +30,54 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
 
     @Override
     public void loadHook(ClassLoader classLoader) throws Exception {
-        //when the chat is show
-        XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
-                    onChatShowListener.show();
+
+        if (QQVersion.isQQNT()) {
+            // mian chat
+            XposedHelpers.findAndHookMethod("com.tencent.qqnt.aio.SplashAIOFragment", classLoader, "onHiddenChanged", boolean.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    boolean isHide = (boolean) param.args[0];
+                    if (isHide) {
+                        for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                            onChatShowListener.hide();
+                        }
+                    } else {
+                        for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                            onChatShowListener.show();
+                        }
+                    }
                 }
-            }
-        });
-        //when the chat is hidden
-        XposedBridge.hookMethod(hideMethod, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
-                    onChatShowListener.hide();
+            });
+        } else {
+            //when the chat is show
+            XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                        onChatShowListener.show();
+                    }
                 }
-            }
-        });
+            });
+            //when the chat is hidden
+            XposedBridge.hookMethod(hideMethod, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                        onChatShowListener.hide();
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public void startFind(MethodFinder finder) throws Exception {
         String findShowString, findHideString;
         if (QQVersion.isQQNT()) {
-            findShowString = "[show]: isAIOShow ";
-            findHideString = "[hide]: nick is ";
+            return;
+            /*findShowString = "[show]: isAIOShow ";
+            findHideString = "[hide]: nick is ";*/
         } else {
             findShowString = "loadBackgroundAsync: skip for mosaic is on";
             findHideString = "doOnStop";
@@ -76,8 +99,10 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
 
     @Override
     public void getMethod(MethodFinder finder) {
-        showMethod = finder.getMethod(showMethodID);
-        hideMethod = finder.getMethod(hideMethodID);
+        if (!QQVersion.isQQNT()) {
+            showMethod = finder.getMethod(showMethodID);
+            hideMethod = finder.getMethod(hideMethodID);
+        }
     }
 
 

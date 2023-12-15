@@ -11,9 +11,9 @@ public class SessionUtils {
     /**
      * 获取当前聊天对象 已适配nt和非nt版本
      *
-     * @return CurrentAIOContact
+     * @return CurrentContact
      */
-    public static Object getCurrentAIOContact() {
+    public static Object getCurrentContact() {
         Object session = SessionApi.getSession();
         if (QQVersion.isQQNT()) {
             return aioContactToContact(session);
@@ -103,7 +103,7 @@ public class SessionUtils {
 
         public static Object getAIOContact(int chatType, String peerUid, String guildId, String nick) {
             try {
-                return ConstructorUtils.newInstance(CommonClass.getAIOContactClass(), new Class[]{int.class, String.class, String.class, String.class}, chatType, (chatType != 2 && chatType != 4 && isNumeric(peerUid)) ? QQEnvTool.getUidFromUin(peerUid) : peerUid, guildId, nick);
+                return ConstructorUtils.newInstance(CommonQQMethodTools.getAIOContactClass(), new Class[]{int.class, String.class, String.class, String.class}, chatType, (chatType != 2 && chatType != 4 && isNumeric(peerUid)) ? QQEnvTool.getUidFromUin(peerUid) : peerUid, guildId, nick);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

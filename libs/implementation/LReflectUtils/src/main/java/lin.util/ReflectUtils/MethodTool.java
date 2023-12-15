@@ -104,11 +104,12 @@ public class MethodTool {
         for (Class<?> currentFindClass = target.findClass == null ? ClassUtils.getClass(target.findClassName) : target.findClass; currentFindClass != Object.class; currentFindClass = currentFindClass.getSuperclass()) {
             MethodFor:
             for (Method method : currentFindClass.getDeclaredMethods()) {
-                if ((method.getName().equals(target.methodName) || target.methodName == null)
-                        && (method.getReturnType().equals(target.returnType) || target.returnType == null)) {
+                if ((target.methodName == null || method.getName().equals(target.methodName))
+                        && (target.returnType == null || method.getReturnType().equals(target.returnType))) {
                     Class<?>[] methodParams = method.getParameterTypes();
                     if (methodParams.length == target.methodParams.length) {
                         for (int i = 0; i < methodParams.length; i++) {
+                            //如果是obj则直接视该类型为正确的
                             if (target.methodParams[i] == Object.class) continue;
                             if (!Objects.equals(methodParams[i], target.methodParams[i]))
                                 continue MethodFor;

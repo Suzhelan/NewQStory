@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.FieIdUtils;
-import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.ApiHookItem;
@@ -41,7 +41,7 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
     public void loadHook(ClassLoader classLoader) throws Exception {
         if (QQVersion.isQQNT()) {
 
-            Class<?> AIODelegateClass = classLoader.loadClass("com.tencent.qqnt.aio.activity.AIODelegate");
+            /*Class<?> AIODelegateClass = classLoader.loadClass("com.tencent.qqnt.aio.activity.AIODelegate");
             Method method = MethodTool.find("com.tencent.qqnt.aio.SplashAIOFragment").returnType(AIODelegateClass).get();
             XposedBridge.hookMethod(method, new XC_MethodHook() {
                 @Override
@@ -50,7 +50,25 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
                     Class<?> findClass = result.getClass();
                     currentAIOContact = MethodTool.find(findClass).returnType(classLoader.loadClass("com.tencent.aio.data.AIOContact")).call(result);
                 }
-            });
+            });*/
+
+            Class<?> aClass = ClassUtils.getClass("com.tencent.aio.runtime.AIOContextImpl");
+            XposedHelpers.findAndHookConstructor(aClass,
+                    ClassUtils.getClass("com.tencent.aio.main.fragment.ChatFragment"),
+                    ClassUtils.getClass("com.tencent.aio.data.AIOParam"),
+                    ClassUtils.getClass("androidx.lifecycle.LifecycleOwner"),
+                    ClassUtils.getClass("kotlin.jvm.functions.Function0"),
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                            Object aIOParam = param.args[1];
+                            Object aIOSession = FieIdUtils.getFirstField(aIOParam, ClassUtils.getClass("com.tencent.aio.data.AIOSession"));
+                            Object aIOContact = FieIdUtils.getFirstField(aIOSession, ClassUtils.getClass("com.tencent.aio.data.AIOContact"));
+                            currentAIOContact = aIOContact;
+                        }
+                    }
+            );
             /*Method getAIOContact = classLoader.loadClass("com.tencent.qqnt.aio.SplashAIOFragment").getMethod("getAIOContact");
             XposedBridge.hookMethod(getAIOContact, new XC_MethodHook() {
                 @Override

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@drawable/save_voice_shape">
 
     <LinearLayout
+        android:padding="15dp"
         android:id="@+id/save_voice_root_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,24 +25,20 @@
             android:textSize="20sp" />
 
         <EditText
+            android:layout_marginTop="10dp"
             android:id="@+id/voice_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:background="@drawable/edittext_shape"
             android:hint="@string/SaveNoName"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal"
-            android:paddingTop="5dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/save_voice_close"
@@ -48,9 +46,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/card_shape"
+                android:background="@drawable/voice_button_shape"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                android:textColor="@color/text_color"
                 android:text="取消"
                 android:textSize="18sp" />
 
@@ -60,10 +59,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/card_shape"
+                android:background="@drawable/voice_button_shape"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="保存"
+                android:textColor="@color/text_color"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>

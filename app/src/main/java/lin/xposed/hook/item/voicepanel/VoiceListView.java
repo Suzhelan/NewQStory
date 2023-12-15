@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import lin.widget.dialog.base.BaseSimpleDialog;
 import lin.widget.dialog.base.MDialog;
 import lin.xposed.R;
 import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.common.utils.FileUtils;
-import lin.xposed.common.utils.ScreenParamUtils;
-import lin.xposed.common.utils.ViewUtils;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.util.PathTool;
 import lin.xposed.hook.util.ToastTool;
@@ -118,9 +117,9 @@ public class VoiceListView {
                     if (voiceFile.isFile()) {
                         //尝试发送语音
                         if (QQVersion.isQQNT()) {
-                            QQNTSendMsgUtils.sendVoice(SessionUtils.getCurrentAIOContact(), voiceFile.getAbsolutePath());
+                            QQNTSendMsgUtils.sendVoice(SessionUtils.getCurrentContact(), voiceFile.getAbsolutePath());
                         } else {
-                            LegacyQQSendTool.sendVoice(SessionUtils.getCurrentAIOContact(), voiceFile.getAbsolutePath());
+                            LegacyQQSendTool.sendVoice(SessionUtils.getCurrentContact(), voiceFile.getAbsolutePath());
                         }
                     } else {
                         dialog.setOnCancelListener(dialogs -> {
@@ -152,13 +151,9 @@ public class VoiceListView {
 
     private static void tryDeleteVoiceFile(File file, Dialog dialogs, Context contexts, String path) {
         Context context = ActivityTools.getActivity();
-        MDialog dialog = new MDialog(context);
+        MDialog dialog = new BaseSimpleDialog(context);
 
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.save_voice_layout, null, false);
-        LinearLayout linearLayout = layout.findViewById(R.id.save_voice_root_layout);
-        GradientDrawable background = ViewUtils.BackgroundBuilder.createBaseBackground(context.getColor(R.color.群青色), ScreenParamUtils.dpToPx(context, 15));
-        background.setAlpha(200);
-        linearLayout.setBackground(background);
         TextView title = layout.findViewById(R.id.save_voice_title);
         title.setText("删除此文件");
         title.setTextColor(context.getColor(R.color.蔷薇色));
@@ -181,7 +176,7 @@ public class VoiceListView {
                     String names = editText.getText().toString().replace("\n", "");
                     if (new File(file.getParentFile() + "/" + names).exists()) {
                         dialog.dismiss();
-                        VoiceTools.repeatFileName(file.getAbsolutePath(), names);
+                        VoiceViewTools.repeatFileName(file.getAbsolutePath(), names);
                         return;
                     }
                     if (file.renameTo(new File(file.getParentFile() + "/" + names))) {
@@ -211,8 +206,6 @@ public class VoiceListView {
         });
         dialog.setContentView(layout);
         dialog.setOnDismissListener(dialog1 -> dialogs.setContentView(buildView(dialogs, contexts, path)));
-
-        dialog.setDialogWindowAttr(0.6, 0.25);
         dialog.show();
     }
 

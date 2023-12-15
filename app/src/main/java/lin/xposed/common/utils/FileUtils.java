@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -25,6 +26,14 @@ public class FileUtils {
         File file = new File(path);
         String oldName = path.substring(0, path.lastIndexOf("."));
         file.renameTo(new File(file.getAbsolutePath(), oldName + suffix));
+    }
+
+    public static byte[] readAllByteArrayFromFile(File file) {
+        try {
+            return readAllByte(new FileInputStream(file), (int) file.length());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static byte[] readAllByte(InputStream stream, int size) {

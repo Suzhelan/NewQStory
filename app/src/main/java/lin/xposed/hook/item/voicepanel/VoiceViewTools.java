@@ -2,7 +2,6 @@ package lin.xposed.hook.item.voicepanel;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,26 +17,25 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import lin.widget.dialog.base.BaseSimpleDialog;
 import lin.widget.dialog.base.MDialog;
 import lin.xposed.R;
 import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.common.utils.FileUtils;
-import lin.xposed.common.utils.ScreenParamUtils;
-import lin.xposed.common.utils.ViewUtils;
+import lin.xposed.hook.item.AddVoiceFloatingWindow;
 import lin.xposed.hook.util.LogUtils;
 import lin.xposed.hook.util.PathTool;
 import lin.xposed.hook.util.ToastTool;
 
-public class VoiceTools {
+public class VoiceViewTools {
     private static MDialog dialog;
 
     public static void createSaveVoiceDialog(Context context, String path) {
         ActivityTools.injectResourcesToContext(context);
         try {
-            dialog = new MDialog(context);
+            dialog = new BaseSimpleDialog(context);
             View v = getSaveVoiceView(context, path);
             dialog.setContentView(v);
-            dialog.setDialogWindowAttr(0.7, 0.25);
             dialog.show();
         } catch (Exception e) {
             LogUtils.addError("创建保存语音面板 已抛出异常", e);
@@ -48,10 +46,6 @@ public class VoiceTools {
         @SuppressLint("InflateParams")
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.save_voice_layout, null, false);
         LinearLayout linearLayout = layout.findViewById(R.id.save_voice_root_layout);
-        GradientDrawable background = ViewUtils.BackgroundBuilder.createBaseBackground(context.getColor(R.color.群青色), ScreenParamUtils.dpToPx(context, 15));
-        background.setAlpha(200);
-        background.setCornerRadius(50);
-        linearLayout.setBackground(background);
         EditText editText = layout.findViewById(R.id.voice_name);
         editText.setText("");
         //监听实时更改dialog大小 防止出现对话框内容多占满整块布局
@@ -103,7 +97,7 @@ public class VoiceTools {
             try {
                 FileUtils.copyFile(path, AddVoiceFloatingWindow.VOICE_PATH + newName);
                 ToastTool.show("语音已保存" + newName);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             //关闭dialog 复制文件在线程里做 避免阻塞UI
@@ -114,14 +108,11 @@ public class VoiceTools {
     @SuppressLint("SetTextI18n")
     public static void repeatFileName(String path, String name) {
         Context context = ActivityTools.getActivity();
-        MDialog dialog1 = new MDialog(context);
+        MDialog dialog1 = new BaseSimpleDialog(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams")
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.save_voice_layout, null, false);
-        LinearLayout linearLayout = layout.findViewById(R.id.save_voice_root_layout);
-        GradientDrawable background = ViewUtils.BackgroundBuilder.createBaseBackground(context.getColor(R.color.群青色), ScreenParamUtils.dpToPx(context, 15));
-        background.setAlpha(200);
-        linearLayout.setBackground(background);
+
         TextView title = layout.findViewById(R.id.save_voice_title);
         title.setText("文件名重复 目录已存在 " + name);
         title.setTextColor(context.getColor(R.color.蔷薇色));
@@ -169,7 +160,6 @@ public class VoiceTools {
             }
         });
         dialog1.setContentView(layout);
-        dialog1.setDialogWindowAttr(0.7, 0.25);
         dialog1.show();
         dialog.dismiss();
     }
