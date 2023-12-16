@@ -29,7 +29,6 @@ public class AddVoiceFloatingWindow extends BaseSwitchFunctionHookItem {
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                                ToastTool.show("show");
                         FloatingWindowsButton.Display(true);
                     }
                 }, 300);

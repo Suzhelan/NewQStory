@@ -100,22 +100,20 @@ public class FloatingWindowsButton {
     }
 
     private static WindowManager.LayoutParams getWindowManagerParams(Context context) {
-        if (layoutParams == null) {
-            layoutParams = new WindowManager.LayoutParams();
-            //只在应用内展示
-            layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-            layoutParams.format = PixelFormat.RGBA_8888;
-            //布局大小
-            layoutParams.width = ScreenParamUtils.dpToPx(context, 30);
-            layoutParams.height = ScreenParamUtils.dpToPx(context, 30);
-            //获取展示位置配置
-            SimpleConfig config = new SimpleConfig(TAG);
-            int x = config.get("show x"), y = config.get("show y");
-            //初始的展示位置
-            layoutParams.x = x != 0 ? x : 50;
-            layoutParams.y = y != 0 ? y : 50;
-        }
+        layoutParams = new WindowManager.LayoutParams();
+        //只在应用内展示
+        layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        layoutParams.format = PixelFormat.RGBA_8888;
+        //布局大小
+        layoutParams.width = ScreenParamUtils.dpToPx(context, 30);
+        layoutParams.height = ScreenParamUtils.dpToPx(context, 30);
+        //获取展示位置配置
+        SimpleConfig config = new SimpleConfig(TAG);
+        int x = config.get("show x"), y = config.get("show y");
+        //初始的展示位置
+        layoutParams.x = x != 0 ? x : 50;
+        layoutParams.y = y != 0 ? y : 50;
         return layoutParams;
     }
 
