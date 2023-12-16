@@ -21,6 +21,19 @@ public class SessionUtils {
         return session;
     }
 
+    public static QSContact AIOContactToQSContact(Object aioContact) {
+        try {
+            String peerUid = FieIdUtils.getField(aioContact, "f", String.class);
+            int type = FieIdUtils.getField(aioContact, "e", int.class);
+            String guild = FieIdUtils.getField(aioContact, "g", String.class);
+            String nick = FieIdUtils.getField(aioContact, "h", String.class);
+            QSContact contact = new QSContact(type, peerUid);
+            return contact;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * *         e = chatType;
      * *         f = peerUid;
@@ -116,6 +129,17 @@ public class SessionUtils {
             }
             return true;
         }
+    }
+
+    public static class QSContact {
+        public int chatType;
+        public String peerUid;
+
+        public QSContact(int chatType, String peerUid) {
+            this.chatType = chatType;
+            this.peerUid = peerUid;
+        }
+
     }
 
 }

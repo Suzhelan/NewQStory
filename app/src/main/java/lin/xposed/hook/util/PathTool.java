@@ -20,7 +20,7 @@ public class PathTool {
     }
 
     public static String getModuleDataPath() {
-        String path = getStorageDirectory() + "/Android/data/" + HookEnv.getCurrentHostAppPackageName() + "/QStory";
+        String path = getStorageDirectory() + "/Android/media/" + HookEnv.getCurrentHostAppPackageName() + "/QStory";
         new File(path).mkdirs();
         return path;
     }

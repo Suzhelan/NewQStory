@@ -1,16 +1,21 @@
 package lin.xposed.hook.item.api;
 
+import android.text.TextUtils;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
+import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.ApiHookItem;
 import lin.xposed.hook.load.methodfind.IMethodFinder;
 import lin.xposed.hook.load.methodfind.MethodFinder;
+import lin.xposed.hook.util.qq.CommonQQMethodTools;
+import lin.xposed.hook.util.qq.SessionUtils;
 
 @HookItem("ListenToChatWindowsAsTheyAppearAndClose")
 public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder {
@@ -32,23 +37,33 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
     public void loadHook(ClassLoader classLoader) throws Exception {
 
         if (QQVersion.isQQNT()) {
-            // mian chat
-            XposedHelpers.findAndHookMethod("com.tencent.qqnt.aio.SplashAIOFragment", classLoader, "onHiddenChanged", boolean.class, new XC_MethodHook() {
+            //on hide and stop
+            Method hideMethod = MethodTool.find("com.tencent.mobileqq.aio.input.draft.InputDraftVMDelegate")
+                    .name("onStop")
+                    .returnType(void.class)
+                    .get();
+
+            XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    boolean isHide = (boolean) param.args[0];
-                    if (isHide) {
-                        for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
-                            onChatShowListener.hide();
-                        }
-                    } else {
-                        for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
-                            onChatShowListener.show();
-                        }
+                    Object aioContact = FieIdUtils.getFirstField(param.thisObject, CommonQQMethodTools.getAIOContactClass());
+                    SessionUtils.QSContact qsContact = SessionUtils.AIOContactToQSContact(aioContact);
+                    if (TextUtils.isEmpty(qsContact.peerUid)) return;
+                    for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                        onChatShowListener.show();
                     }
                 }
             });
+
+            XposedBridge.hookMethod(hideMethod, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
+                        onChatShowListener.hide();
+                    }
+                }
+            });
+
         } else {
             //when the chat is show
             XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
@@ -75,9 +90,8 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
     public void startFind(MethodFinder finder) throws Exception {
         String findShowString, findHideString;
         if (QQVersion.isQQNT()) {
-            return;
-            /*findShowString = "[show]: isAIOShow ";
-            findHideString = "[hide]: nick is ";*/
+            findShowString = "onEnterAioReport mIsAIOShowed";
+            findHideString = "[hide]: nick is ";
         } else {
             findShowString = "loadBackgroundAsync: skip for mosaic is on";
             findHideString = "doOnStop";
@@ -99,7 +113,9 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
 
     @Override
     public void getMethod(MethodFinder finder) {
-        if (!QQVersion.isQQNT()) {
+        if (QQVersion.isQQNT()) {
+            showMethod = finder.getMethod(showMethodID);
+        } else if (!QQVersion.isQQNT()) {
             showMethod = finder.getMethod(showMethodID);
             hideMethod = finder.getMethod(hideMethodID);
         }
