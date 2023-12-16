@@ -41,19 +41,8 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
     public void loadHook(ClassLoader classLoader) throws Exception {
         if (QQVersion.isQQNT()) {
 
-            /*Class<?> AIODelegateClass = classLoader.loadClass("com.tencent.qqnt.aio.activity.AIODelegate");
-            Method method = MethodTool.find("com.tencent.qqnt.aio.SplashAIOFragment").returnType(AIODelegateClass).get();
-            XposedBridge.hookMethod(method, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Object result = param.getResult();
-                    Class<?> findClass = result.getClass();
-                    currentAIOContact = MethodTool.find(findClass).returnType(classLoader.loadClass("com.tencent.aio.data.AIOContact")).call(result);
-                }
-            });*/
-
-            Class<?> aClass = ClassUtils.getClass("com.tencent.aio.runtime.AIOContextImpl");
-            XposedHelpers.findAndHookConstructor(aClass,
+            Class<?> AIOContextImpl = ClassUtils.getClass("com.tencent.aio.runtime.AIOContextImpl");
+            XposedHelpers.findAndHookConstructor(AIOContextImpl,
                     ClassUtils.getClass("com.tencent.aio.main.fragment.ChatFragment"),
                     ClassUtils.getClass("com.tencent.aio.data.AIOParam"),
                     ClassUtils.getClass("androidx.lifecycle.LifecycleOwner"),
@@ -69,17 +58,6 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
                         }
                     }
             );
-            /*Method getAIOContact = classLoader.loadClass("com.tencent.qqnt.aio.SplashAIOFragment").getMethod("getAIOContact");
-            XposedBridge.hookMethod(getAIOContact, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    //进入聊天时会调用三次 退出时会调用两次
-                    //退出时AIOContact内的参数都会为空
-                    //进出频道不会调用此方法
-                    currentAIOContact = param.getResult();
-                }
-            });*/
         } else {
             XposedBridge.hookMethod(doOnAIOCreateMethod, new XC_MethodHook() {
                 @Override

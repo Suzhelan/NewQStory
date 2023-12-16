@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lin.widget.dialog.base.MDialog;
 import lin.xposed.R;
 import lin.xposed.common.config.SimpleConfig;
+import lin.xposed.common.log.QSLog;
 import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.common.utils.ScreenParamUtils;
 import lin.xposed.common.utils.ViewUtils;
@@ -34,14 +35,14 @@ public class FloatingWindowsButton {
     @SuppressLint("StaticFieldLeak")
     private static ImageView floatingButton;
 
-    @SuppressLint("ClickableViewAccessibility")
-    public synchronized static void Display(boolean isShow) {
+
+    public static void Display(boolean isShow) {
         Activity activity = ActivityTools.getActivity();
-        if (activity == null) return;
-        ActivityTools.injectResourcesToContext(activity);
         try {
+            ActivityTools.injectResourcesToContext(activity);
             if (isShow) {
                 if (activity == LastActivity) {
+                    //activity token 未过期
                     if (!isShowing.getAndSet(true)) {
                         windowManager.addView(floatingButton, getWindowManagerParams(activity));
                     }
@@ -49,7 +50,7 @@ public class FloatingWindowsButton {
                     if (isShowing.getAndSet(false)) {
                         windowManager.removeViewImmediate(floatingButton);
                     }
-                    windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+                    windowManager = activity.getWindowManager();
                     initFloatingButton(activity);
                     windowManager.addView(floatingButton, getWindowManagerParams(activity));
                     isShowing.set(true);
@@ -66,13 +67,12 @@ public class FloatingWindowsButton {
                 }
             }
         } catch (Exception e) {
-
+            QSLog.e(AddVoiceFloatingWindow.class, e);
         }
     }
 
 
     //初始化显示的悬浮窗控件
-    @SuppressLint("ClickableViewAccessibility")
     private static void initFloatingButton(Context context) {
         floatingButton = new ImageView(context);
         floatingButton.setImageDrawable(AddVoiceFloatingWindow.getVoiceFloatingWindowIcon());

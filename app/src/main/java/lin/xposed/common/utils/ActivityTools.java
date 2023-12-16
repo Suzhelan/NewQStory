@@ -8,12 +8,12 @@ import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lin.util.ReflectUtils.FieIdUtils;
 import lin.util.ReflectUtils.ReflectException;
 import lin.xposed.R;
 import lin.xposed.hook.HookEnv;
@@ -63,11 +63,29 @@ public class ActivityTools {
         }
     }
 
+    public static Activity getTopActivity() {
+        try {
+            Object ActivityThread = FieIdUtils.getStaticFieId(Class.forName("android.app.ActivityThread"), "sCurrentActivityThread");
+            Map<?, ?> activities = FieIdUtils.getUnknownTypeField(ActivityThread, "mActivities");
+            for (Object activityRecord : activities.values()) {
+                boolean isPause = FieIdUtils.getField(activityRecord, "paused", boolean.class);
+                if (!isPause) {
+                    Activity act = FieIdUtils.getUnknownTypeField(activityRecord, "activity");
+                    injectResourcesToContext(act);
+                    return act;
+                }
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     /*
      * 获取当前正在运行的Activity
      */
     public static Activity getActivity() {
-        Class<?> activityThreadClass;
+        return getTopActivity();
+        /*Class<?> activityThreadClass;
         try {
             activityThreadClass = Class.forName("android.app.ActivityThread");
             //获取当前活动线程
@@ -92,7 +110,7 @@ public class ActivityTools {
         } catch (Exception e) {
 
         }
-        return null;
+        return null;*/
     }
 
     /*

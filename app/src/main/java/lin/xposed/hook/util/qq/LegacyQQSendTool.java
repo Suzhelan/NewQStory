@@ -27,13 +27,7 @@ public class LegacyQQSendTool {
     static String TAG = "QQSendUtils";
 
     public static void sendTextMsg(Object session, String text, ArrayList atList) {
-        Method send = MethodUtils.findMethod("com.tencent.mobileqq.activity.ChatActivityFacade", null, void.class, new Class[]{
-                ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"),
-                Context.class,
-                ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"),
-                String.class,
-                ArrayList.class
-        });
+        Method send = MethodUtils.findMethod("com.tencent.mobileqq.activity.ChatActivityFacade", null, void.class, new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), Context.class, ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), String.class, ArrayList.class});
         try {
             send.invoke(null, SessionUtils.LegacyQQ.getAppInterface(), HookEnv.getHostAppContext(), session, text, atList);
         } catch (Exception e) {
@@ -48,11 +42,7 @@ public class LegacyQQSendTool {
 
     //发送对象,图片对象
     public static void sendPic(Object session, Object pic) {
-        Method m = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, void.class, new Class[]{
-                ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"),
-                ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"),
-                ClassUtils.getClass("com.tencent.mobileqq.data.MessageForPic"),
-                int.class});
+        Method m = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, void.class, new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), ClassUtils.getClass("com.tencent.mobileqq.data.MessageForPic"), int.class});
         if (m == null) {
             LogUtils.addError(new NullPointerException("find sendPic method == null"));
         }
@@ -76,10 +66,7 @@ public class LegacyQQSendTool {
                 FileUtils.copyFile(path, newPath);
                 path = newPath;
             }
-            Method CallMethod = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"),
-                    null, long.class, new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"),
-                            ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"),
-                            String.class});
+            Method CallMethod = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, long.class, new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), String.class});
             CallMethod.invoke(null, SessionUtils.LegacyQQ.getAppInterface(), _Session, path);
         } catch (Exception e) {
             LogUtils.addRunLog(TAG, e);
@@ -92,14 +79,8 @@ public class LegacyQQSendTool {
         //构建要发送的图片消息
         public static Object builderPic(Object session, String path) {
             try {
-                Method CallMethod = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, ClassUtils.getClass("com.tencent.mobileqq.data.ChatMessage"), new Class[]{
-                        ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"),
-                        ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"),
-                        String.class
-                });
-                Object PICMsg = CallMethod.invoke(null,
-                        SessionUtils.LegacyQQ.getAppInterface(), session, path
-                );
+                Method CallMethod = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, ClassUtils.getClass("com.tencent.mobileqq.data.ChatMessage"), new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), String.class});
+                Object PICMsg = CallMethod.invoke(null, SessionUtils.LegacyQQ.getAppInterface(), session, path);
                 FieIdUtils.setField(PICMsg, "md5", DataUtils.getFileMD5(new File(path)));
                 FieIdUtils.setField(PICMsg, "uuid", DataUtils.getFileMD5(new File(path)) + ".jpg");
                 FieIdUtils.setField(PICMsg, "localUUID", UUID.randomUUID().toString());
@@ -121,7 +102,7 @@ public class LegacyQQSendTool {
                     ins.close();
                     if (buffer[0] == 'R' && buffer[1] == 'I' && buffer[2] == 'F' && buffer[3] == 'F') {
                         Bitmap bitmap = BitmapFactory.decodeFile(Path);
-                        String CachePath = PathTool.getModuleCachePath("img") + DataUtils.getFileMD5(f);
+                        String CachePath = PathTool.getModuleCachePath("img") + "/" + DataUtils.getFileMD5(f);
                         BufferedOutputStream bOut = new BufferedOutputStream(new FileOutputStream(CachePath));
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, bOut);
                         if (new File(CachePath).length() > 128) {
