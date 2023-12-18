@@ -126,6 +126,14 @@ public class MethodTool {
         throw new ReflectException("没有查找到方法 : " + signature);
     }
 
+    public class TypeMatcher {
+        private String startString;
+
+        public TypeMatcher(String startWithACharacter) {
+            this.startString = startWithACharacter;
+        }
+    }
+
     private static class TargetMethodInfo {
         public Class<?> findClass;
         public String findClassName;

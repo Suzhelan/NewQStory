@@ -39,4 +39,16 @@ public class CommonQQMethodTools {
     public static Class<?> getAIOMsgItemClass() {
         return ClassUtils.getClass("com.tencent.mobileqq.aio.msg.AIOMsgItem");
     }
+
+    public static class LegacyQQ {
+
+        public static Class<?> getMessageRecordClass() {
+            return ClassUtils.getClass("com.tencent.mobileqq.data.MessageRecord");
+        }
+
+        public static Class<?> getMessageClass() {
+            return ClassUtils.getClass("com.tencent.imcore.message.Message");
+        }
+    }
+
 }

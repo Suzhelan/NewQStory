@@ -38,7 +38,7 @@ android {
         minSdk 28
         //noinspection ExpiredTargetSdkVersion
         targetSdk 29
-        versionCode 70
+        versionCode 71
         versionName parseVersionCode(versionCode)
     }
 

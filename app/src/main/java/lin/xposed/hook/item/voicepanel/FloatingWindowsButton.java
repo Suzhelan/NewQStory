@@ -38,6 +38,7 @@ public class FloatingWindowsButton {
 
     public static void Display(boolean isShow) {
         Activity activity = ActivityTools.getActivity();
+        if (activity == null) return;
         try {
             ActivityTools.injectResourcesToContext(activity);
             if (isShow) {
