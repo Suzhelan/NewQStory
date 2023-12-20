@@ -6,13 +6,12 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,7 +25,7 @@ import lin.xposed.hook.util.ToastTool;
 
 @HookItem("辅助功能/实验功能/删除主页聊天列表")
 public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
-    private final HashMap<Object, Integer> viewHolderList = new LinkedHashMap<>();
+    private final ConcurrentHashMap<Object, Integer> viewHolderList = new ConcurrentHashMap<>();
     private int deleteTextViewId;
 
     @Override
@@ -76,6 +75,7 @@ public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
                 }
             });
         });
+        hookOnHolder();
 
     }
 
@@ -97,6 +97,9 @@ public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
         hookBefore(onHolderBindTimeingCallSetOnClickMethod, param -> {
             int adapterIndex = (int) param.args[2];
             Object item = param.args[1];
+            String str = String.valueOf(item);
+            str = str.replace("RecentContactChatItem", "");
+
             //Holder在前 索引在后 因为Holder在复用池中所以引用地址不会变 但是索引在Adapter中是随时变化的
             viewHolderList.put(param.thisObject, adapterIndex);
         });
@@ -196,7 +199,7 @@ public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
                         int viewId = deleteTextViewId;//call param 4
                         getDeleteMethod(recentContactItemHolder).invoke(util, adapterIndex, itemInfo, itemBinder, viewId);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+
                     }
                     iterator.remove();
                 }

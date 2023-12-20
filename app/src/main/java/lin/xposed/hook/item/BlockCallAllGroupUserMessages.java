@@ -13,7 +13,7 @@ import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 import lin.xposed.hook.util.LogUtils;
 
 @HookItem("净化/通知/屏蔽AT全体消息的系统通知")
-public class BlockAtAllMessages extends BaseSwitchFunctionHookItem {
+public class BlockCallAllGroupUserMessages extends BaseSwitchFunctionHookItem {
     @Override
     public void loadHook(ClassLoader classLoader) throws Exception {
 
@@ -31,7 +31,7 @@ public class BlockAtAllMessages extends BaseSwitchFunctionHookItem {
                 @Override
                 public void execute(XC_MethodHook.MethodHookParam param) throws Throwable {
                     String contentObjToString = String.valueOf(param.args[1]);
-                    if (contentObjToString.contains("@全体成员")) {
+                    if (contentObjToString.contains("content=[@全体成员]")) {
                         LogUtils.addRunLog("AtAllUserNotification", contentObjToString);
                         param.setResult(null);
                     }
