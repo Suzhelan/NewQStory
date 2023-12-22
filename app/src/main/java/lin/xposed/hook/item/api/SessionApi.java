@@ -33,6 +33,9 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
         return currentSessionInfo;
     }
 
+    public static Object getAIOContact() {
+        return currentAIOContact;
+    }
     public static Object getAppInterface() {
         return AppInterface;
     }

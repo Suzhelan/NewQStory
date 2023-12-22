@@ -34,7 +34,8 @@ public class CancelCamera extends BaseSwitchFunctionHookItem {
                 LinearLayout layout = (LinearLayout) param.thisObject;
                 for (int i = 0; i < layout.getChildCount(); i++) {
                     View PaneIconImage = layout.getChildAt(i);
-                    if (PaneIconImage.getContentDescription().equals("拍照")) {
+                    CharSequence contentDescription = PaneIconImage.getContentDescription();
+                    if (contentDescription != null && contentDescription.equals("拍照")) {
                         layout.removeViewAt(i);
                         break;
                     }

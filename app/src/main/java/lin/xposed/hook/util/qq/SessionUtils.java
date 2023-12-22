@@ -9,16 +9,20 @@ import lin.xposed.hook.item.api.SessionApi;
 
 public class SessionUtils {
     /**
-     * 获取当前聊天对象 已适配nt和非nt版本
+     * 获取当前聊天对象 适配nt
      *
      * @return CurrentContact
      */
     public static Object getCurrentContact() {
-        Object session = SessionApi.getSession();
+        Object session = SessionApi.getAIOContact();
         if (QQVersion.isQQNT()) {
             return aioContactToContact(session);
         }
         return session;
+    }
+
+    public static Object getCurrentSessionInfo() {
+        return SessionApi.getSession();
     }
 
     public static QSContact AIOContactToQSContact(Object aioContact) {

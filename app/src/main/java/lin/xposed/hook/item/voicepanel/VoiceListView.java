@@ -119,7 +119,7 @@ public class VoiceListView {
                         if (QQVersion.isQQNT()) {
                             QQNTSendMsgUtils.sendVoice(SessionUtils.getCurrentContact(), voiceFile.getAbsolutePath());
                         } else {
-                            LegacyQQSendTool.sendVoice(SessionUtils.getCurrentContact(), voiceFile.getAbsolutePath());
+                            LegacyQQSendTool.sendVoice(SessionUtils.getCurrentSessionInfo(), voiceFile.getAbsolutePath());
                         }
                     } else {
                         dialog.setOnCancelListener(dialogs -> {

@@ -13,7 +13,7 @@ import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 import lin.xposed.hook.util.LogUtils;
 
 @HookItem("净化/通知/屏蔽AT全体消息的系统通知")
-public class BlockCallAllGroupUserMessages extends BaseSwitchFunctionHookItem {
+public class BlockCallGroupAllUserMessageNotification extends BaseSwitchFunctionHookItem {
     @Override
     public void loadHook(ClassLoader classLoader) throws Exception {
 
