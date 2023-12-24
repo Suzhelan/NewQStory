@@ -12,10 +12,10 @@
     * 其他版本未经测试 您或许可以自己尝试 
     
 * **推荐使用的框架**
-    - 1.LSPosed
-    - 2.LSPatch 本地模式
-    - 3.太极-无极
-    - 4.LSPatch 内置模式(便携模式)
+    - 1.[LSPosed](https://github.com/LSPosed/LSPosed)
+    - 2.[LSPatch](https://github.com/LSPosed/LSPatch) 本地模式(没root的可以用这个)
+    - 3.[LSPatch](https://github.com/LSPosed/LSPatch) 内置模式(便携模式 或者这个)
+    - 4.太极-无极
  ---
 * **更新频率**
 
