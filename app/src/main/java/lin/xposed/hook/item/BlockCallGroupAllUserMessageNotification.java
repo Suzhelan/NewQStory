@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.hook.QQVersion;
@@ -45,8 +45,8 @@ public class BlockCallGroupAllUserMessageNotification extends BaseSwitchFunction
                 @Override
                 public void execute(XC_MethodHook.MethodHookParam param) throws Throwable {
                     Object message = param.args[0];
-                    String messageText = FieIdUtils.getField(message, "msg", String.class);
-                    int bizType = FieIdUtils.getField(message, "bizType", int.class);
+                    String messageText = FieldUtils.getField(message, "msg", String.class);
+                    int bizType = FieldUtils.getField(message, "bizType", int.class);
                     if (bizType == 14 && messageText.contains("@全体成员"))
                         param.setResult(null);
                 }

@@ -17,11 +17,15 @@ import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 
 @HookItem("净化/侧滑栏/精简侧滑栏右上角二维码")
 public class QQSettingMeViewQRCode extends BaseSwitchFunctionHookItem {
+
     @Override
     public void loadHook(ClassLoader loader) throws Exception {
         Class<?> settingView;
         Class<?> resultClass;
-        if (HookEnv.getVersionCode() >= QQVersion.QQ_8_9_90) {
+        if (HookEnv.getVersionCode() >= QQVersion.QQ_9_0_0) {
+            settingView = loader.loadClass("com.tencent.mobileqq.QQSettingMe");
+            resultClass = loader.loadClass("com.tencent.mobileqq.QQSettingMeView").getSuperclass();
+        } else if (HookEnv.getVersionCode() >= QQVersion.QQ_8_9_90) {
             settingView = loader.loadClass("com.tencent.mobileqq.QQSettingMe");
             resultClass = loader.loadClass("com.tencent.mobileqq.BaseQQSettingMeView");
         } else {
@@ -81,4 +85,5 @@ public class QQSettingMeViewQRCode extends BaseSwitchFunctionHookItem {
     public String getTips() {
         return "重启生效,该项仅在旧版侧滑栏生效";
     }
+
 }

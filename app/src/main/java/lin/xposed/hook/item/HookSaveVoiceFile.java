@@ -11,7 +11,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ConstructorUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.R;
@@ -28,7 +28,7 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
 
     @Override
     public String getTips() {
-        return "长按一条语音,可能还没适配 8.9.9.6及以上版本";
+        return "长按一条语音";
     }
 
     /**
@@ -45,9 +45,9 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
             hookBefore(setMenu, param -> {
                 Object itemListWrapper = param.args[0];
                 //如果想添加Item则add到这个list
-                List itemList = FieIdUtils.getFirstField(itemListWrapper, List.class);
+                List itemList = FieldUtils.getFirstField(itemListWrapper, List.class);
                 Object item = itemList.get(0);
-                Object aioMsgItem = FieIdUtils.getFirstField(item, ClassUtils.getClass("com.tencent.mobileqq.aio.msg.AIOMsgItem"));
+                Object aioMsgItem = FieldUtils.getFirstField(item, ClassUtils.getClass("com.tencent.mobileqq.aio.msg.AIOMsgItem"));
                 Object msgRecord = XposedHelpers.callMethod(aioMsgItem, "getMsgRecord");
 
             });
@@ -100,7 +100,7 @@ public class HookSaveVoiceFile extends BaseSwitchFunctionHookItem {
                 //new一个menuitem
                 Object MenuItem = ConstructorUtils.newInstance(arr.getClass().getComponentType(), 4192, "保存到QS");
                 //设置该菜单的展示优先级
-                FieIdUtils.setField(MenuItem, "c", Integer.MAX_VALUE - 2);
+                FieldUtils.setField(MenuItem, "c", Integer.MAX_VALUE - 2);
                 Array.set(ret, 0, MenuItem);
                 param.setResult(ret);
             });

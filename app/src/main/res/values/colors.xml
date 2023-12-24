@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="itemGroup_themeColors">@color/纯绿</color>
+    <color name="item_color">@color/white</color>
+
     <color name="text_color">#000000</color>
     <!--透明-->
     <color name="transparent">#00000000</color>
@@ -30,6 +33,12 @@
     <color name="群青色">#4e72b8</color>
     <color name="空色">#90d7ec</color>
     <color name="水色">#afdfe4</color>
+
+    <color name="纯红">#FF0000</color>
+    <color name="橙红色">#FF4500</color>
+    <color name="猩红">#DC143C</color>
+    <color name="纯绿">#008000</color>
+
     <color name="QQ蓝">#00B1FF</color>
     <color name="QQSettingWhite">#F5F5F5</color>
 </resources>

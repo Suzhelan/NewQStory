@@ -73,6 +73,7 @@ android {
         main {
             res.srcDirs = ['src/main/res/dialog',
                            'src/main/res/item',
+                           'src/main/res/qtool_emo_panel',
                            'src/main/res']
         }
     }
@@ -94,19 +95,17 @@ static String parseVersionCode(int ver) {
 println System.properties['os.name']
 dependencies {
 
-    def appcompat_version = "1.7.0-alpha02"
     //安卓依赖
-    //noinspection GradleDependency,NotInterpolated
-    implementation 'androidx.appcompat:appcompat:$appcompat_version'
-    implementation 'com.google.android.material:material:1.10.0'
-
+    implementation libs.androidx.appcompat
+    implementation libs.material
     implementation 'com.github.megatronking.stringfog:xor:5.0.0'//字符串混淆库
 
-    implementation 'net.bytebuddy:byte-buddy-android:1.14.10'//动态字节库
+    implementation libs.byte.buddy.android//动态字节库
 
-//    implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.9'//音频转换全能库
-//    implementation group: 'ws.schild', name: 'jave-all-deps', version: '3.4.0'
-//    implementation 'com.fulongbin.silk_v3_decoder:decoder:0.9.11'
+    implementation libs.glide//image绘制库
+    implementation project(':XPopup')
+    implementation project(':easy-adapter')
+    implementation "com.airbnb.android:lottie:5.2.0"
 
     //防止kt版本不匹配编译异常 (虽然没用到kt语言)
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.8.20-RC'))

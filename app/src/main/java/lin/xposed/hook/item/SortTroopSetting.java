@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.common.utils.ScreenParamUtils;
 import lin.xposed.hook.annotation.HookItem;
@@ -34,7 +34,7 @@ public class SortTroopSetting extends BaseSwitchFunctionHookItem {
         hookAfter(doOnCreateMethod, new HookBehavior() {
             @Override
             public void execute(XC_MethodHook.MethodHookParam param) throws Throwable {
-                LinearLayout rootView = FieIdUtils.getFirstField(param.thisObject, LinearLayout.class);
+                LinearLayout rootView = FieldUtils.getFirstField(param.thisObject, LinearLayout.class);
                 int troopInfoTextIndex = 0;
                 View troopAppListView = null;
 //                View[] views = FieIdUtils.getFirstField(param.thisObject, View[].class);//过于复杂 不如不用

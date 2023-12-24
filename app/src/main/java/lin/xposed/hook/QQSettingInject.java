@@ -25,7 +25,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ConstructorUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.R;
 import lin.xposed.common.utils.ActivityTools;
@@ -56,7 +56,7 @@ public class QQSettingInject extends BaseHookItem {
                 for (Object wrapper : itemGroupWraperList) {
                     try {
                         //获取包装器里实际存放的Item集合
-                        List<Object> itemList = FieIdUtils.getFirstField(wrapper, List.class);
+                        List<Object> itemList = FieldUtils.getFirstField(wrapper, List.class);
                         //筛选
                         if (itemList == null || itemList.isEmpty()) continue;
                         String name = itemList.get(0).getClass().getName();
@@ -66,7 +66,6 @@ public class QQSettingInject extends BaseHookItem {
                         Class<?> itemClass = itemList.get(0).getClass();
                         //新建自己的Item
                         Object mItem = ConstructorUtils.newInstance(itemClass, new Class[]{Context.class, int.class, CharSequence.class, int.class}, context, 0x520a, context.getString(R.string.app_name), R.mipmap.ic_launcher_round);
-
 
                         Method[] setOnClickMethods = MethodUtils.fuzzyLookupMethod(itemClass, new MethodUtils.FuzzyLookupConditions() {
                             @Override
@@ -108,14 +107,14 @@ public class QQSettingInject extends BaseHookItem {
         try {
             //如果是在QQ版本<8.9.70这个类是查找不到的 就会抛出异常去执行hook_QQ_8970_Setting
             Class<?> settingActivityClass = ClassUtils.getClass("com.tencent.mobileqq.activity.QQSettingSettingActivity");
-            hook_common_qq(settingActivityClass);
+            hookLegacyQQ(settingActivityClass);
         } catch (Exception e) {
             hook_QQ_8970_Setting();
         }
 
     }
 
-    public void hook_common_qq(Class<?> settingActivityClass) {
+    public void hookLegacyQQ(Class<?> settingActivityClass) {
         XC_MethodHook hook = new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {

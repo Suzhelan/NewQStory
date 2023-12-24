@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.widget.dialog.SimpleRadioDialog;
 import lin.xposed.R;
@@ -95,7 +95,7 @@ public class QuicklyTurnOnDNDMessages extends BaseSwitchFunctionHookItem {
         Method onCreateMethod = MethodTool.find("com.tencent.mobileqq.activity.home.Conversation").name("onResume").params(boolean.class).get();
         hookAfter(onCreateMethod, param -> {
             //这个是QQ原本的主页右上角 + 图标 尽量不要动这个的长按事件 因为qa已经用了
-            ImageView imageView = FieIdUtils.getFirstField(param.thisObject, ImageView.class);
+            ImageView imageView = FieldUtils.getFirstField(param.thisObject, ImageView.class);
             RelativeLayout titleView = (RelativeLayout) imageView.getParent().getParent();
             Activity activity = (Activity) imageView.getContext();
             ActivityTools.injectResourcesToContext(activity);

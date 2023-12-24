@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lin.app.main.ModuleBuildInfo;
-import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ReflectException;
 import lin.xposed.common.config.SimpleConfig;
 import lin.xposed.common.utils.FileUtils;
@@ -62,7 +61,7 @@ public class HookItemLoader {
                  * Class.isAssignableFrom判断左边是不是右边的父类
                  */
                 if (hookItemInstance.isLoadedByDefault() && !BaseSwitchFunctionHookItem.class.isAssignableFrom(hookItemClass)) {
-                    hookItemInstance.loadHook(ClassUtils.getHostLoader());
+                    hookItemInstance.startLoadHook();
                 }
             } catch (Exception e) {
                 hookItemInstance.getExceptionCollectionToolInstance().addException(e);
@@ -83,6 +82,7 @@ public class HookItemLoader {
         return dataIsOutOfDate;
     }
 
+
     public static class SettingLoader {
         public static final String IS_ENABLED = "是否开启";
         public static final String BYPASS_DEFAULT_LOAD = "绕过默认加载";
@@ -93,7 +93,29 @@ public class HookItemLoader {
             return PathTool.getModuleDataPath() + "/data/item";
         }
 
-        public static void saveData(String itemName) {
+        /**
+         * 移出默认加载
+         * 通知默认加载文件 该hook item已经不用管理默认加载
+         */
+        public static void moveOutDefaultLoad(BaseSwitchFunctionHookItem hookItem) {
+            if (hookItem == null) return;
+            SimpleConfig defaultLoadConfig = new SimpleConfig("DefaultLoad");
+            defaultLoadConfig.put(hookItem.getItemPath() + "_" + BYPASS_DEFAULT_LOAD, true);
+            defaultLoadConfig.submit();
+        }
+
+        /**
+         * 获取该item是否被跳过了默认加载
+         */
+        public static boolean getDefaultLoadState(BaseSwitchFunctionHookItem hookItem) {
+            SimpleConfig defaultLoadConfig = new SimpleConfig("DefaultLoad");
+            Boolean skipDefaultLoad = defaultLoadConfig.get(hookItem.getItemPath() + "_" + BYPASS_DEFAULT_LOAD);
+            if (skipDefaultLoad == null) return false;
+            return skipDefaultLoad;
+        }
+
+        public static void saveData(BaseSwitchFunctionHookItem theHookItem) {
+            moveOutDefaultLoad(theHookItem);
             if (dataList == null) dataList = new JSONObject();
             for (Map.Entry<Class<?>, BaseHookItem> hookItemEntry : HookInstance.entrySet()) {
                 BaseHookItem itemInstance = hookItemEntry.getValue();
@@ -105,7 +127,7 @@ public class HookItemLoader {
                         data.put(IS_ENABLED, hookItem.isEnabled());
                         dataList.put(hookItem.getItemPath(), data);
                     } catch (Exception e) {
-                        LogUtils.addError(e);
+                        itemInstance.getExceptionCollectionToolInstance().addException(e);
                     }
                 }
             }
@@ -122,7 +144,7 @@ public class HookItemLoader {
             try {
                 dataList = new JSONObject(FileUtils.readFileText(getDataPath()));
             } catch (Exception e) {
-                //如果配置出现修改导致出错
+                //如果配置出现修改导致出错则保存一次
                 saveData(null);
                 LogUtils.addError(e);
                 ToastTool.show("[QStory]加载设置失败qwq " + e);
@@ -131,9 +153,18 @@ public class HookItemLoader {
             //加载设置
             for (Map.Entry<Class<?>, BaseHookItem> hookItemEntry : HookInstance.entrySet()) {
                 BaseHookItem itemInstance = hookItemEntry.getValue();
-                //只保存能开关的数据
+                //只加载能开关的数据
                 if (BaseSwitchFunctionHookItem.class.isAssignableFrom(itemInstance.getClass())) {
                     BaseSwitchFunctionHookItem hookItem = (BaseSwitchFunctionHookItem) itemInstance;
+                    if (hookItem.isLoadedByDefault() && !getDefaultLoadState(hookItem)) {
+                        try {
+                            hookItem.setEnabled(true);
+                            hookItem.startLoadHook();
+                            continue;
+                        } catch (Exception e) {
+                            hookItem.getExceptionCollectionToolInstance().addException(e);
+                        }
+                    }
                     //没有可能是新加的功能 略过
                     if (dataList.isNull(hookItem.getItemPath())) continue;
                     try {
@@ -141,7 +172,7 @@ public class HookItemLoader {
                         if (data.getBoolean(IS_ENABLED)) {
                             boolean enabled = data.getBoolean(IS_ENABLED);
                             hookItem.setEnabled(enabled);
-                            hookItem.loadHook(ClassUtils.getHostLoader());
+                            hookItem.startLoadHook();
                         }
                     } catch (Exception e) {
                         hookItem.getExceptionCollectionToolInstance().addException(e);

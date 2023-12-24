@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
@@ -66,7 +66,7 @@ public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
         //不hook onCreate方法了 那样需要重启才能生效 hook onResume可在界面重新渲染到屏幕时会调用生效
         Method onCreateMethod = MethodTool.find("com.tencent.mobileqq.activity.home.Conversation").name("onResume").params(boolean.class).get();
         hookAfter(onCreateMethod, param -> {
-            ImageView imageView = FieIdUtils.getFirstField(param.thisObject, ImageView.class);
+            ImageView imageView = FieldUtils.getFirstField(param.thisObject, ImageView.class);
             imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -192,10 +192,10 @@ public class DeleteAllChatItemView extends BaseSwitchFunctionHookItem {
                     try {
                         Object recentContactItemHolder = viewHolderEntry.getKey();
                         //delete util
-                        Object util = FieIdUtils.getFirstField(recentContactItemHolder, findUtilClassType(recentContactItemHolder));//util run time obj
+                        Object util = FieldUtils.getFirstField(recentContactItemHolder, findUtilClassType(recentContactItemHolder));//util run time obj
                         int adapterIndex = viewHolderEntry.getValue();//call param 1
                         Object itemInfo = findItemField(recentContactItemHolder);//call param 2
-                        Object itemBinder = FieIdUtils.getFirstField(recentContactItemHolder, ClassUtils.getClass("com.tencent.qqnt.chats.core.adapter.holder.RecentContactItemBinding"));//call param 3
+                        Object itemBinder = FieldUtils.getFirstField(recentContactItemHolder, ClassUtils.getClass("com.tencent.qqnt.chats.core.adapter.holder.RecentContactItemBinding"));//call param 3
                         int viewId = deleteTextViewId;//call param 4
                         getDeleteMethod(recentContactItemHolder).invoke(util, adapterIndex, itemInfo, itemBinder, viewId);
                     } catch (Exception e) {

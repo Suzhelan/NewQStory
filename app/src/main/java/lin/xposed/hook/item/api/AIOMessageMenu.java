@@ -48,8 +48,8 @@ public class AIOMessageMenu extends ApiHookItem implements IMethodFinder {
                     .method(ElementMatchers.named("b")).intercept(FixedValue.value(id))
                     //method
                     .method(ElementMatchers.is(method)).intercept(MethodCall.call(callable))
-
-                    .method(ElementMatchers.named("a")).intercept(FixedValue.value(783492382))
+                    //res id
+                    .method(ElementMatchers.named("a")).intercept(FixedValue.value(id))
 
                     .make()
                     .load(declaringClass.getClassLoader(),

@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import lin.util.ReflectUtils.ClassUtils;
 import lin.xposed.R;
 import lin.xposed.common.utils.ScreenParamUtils;
 import lin.xposed.common.utils.ViewUtils;
@@ -144,7 +143,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             backgroundRadius[2] = radius;
             backgroundRadius[3] = radius;
         }
-        int color = isGroupInfo ? view.getContext().getColor(R.color.露草色) : view.getContext().getColor(R.color.white);
+        int color = isGroupInfo ? view.getContext().getColor(R.color.itemGroup_themeColors) : view.getContext().getColor(R.color.item_color);
         /*color -= 0xf * 16 ^ 7 + 0xf * 16 ^ 6;
         color += 5 * 16 ^ 7 + 9 * 16 ^ 6;*/
 
@@ -191,10 +190,10 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     hookItem.setEnabled(isChecked);
-                    HookItemLoader.SettingLoader.saveData(hookItem.getItemPath());
+                    HookItemLoader.SettingLoader.saveData(hookItem);
                     if (isChecked) {
                         try {
-                            hookItem.loadHook(ClassUtils.getHostLoader());
+                            hookItem.startLoadHook();
                         } catch (Exception e) {
                             hookItem.getExceptionCollectionToolInstance().addException(e);
                             itemViewHolder.leftTextView.setTextColor(context.getColor(R.color.蔷薇色));

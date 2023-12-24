@@ -1,18 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.kotlin_version = '1.9.21'
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.megatronking.stringfog:gradle-plugin:5.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // 选用加解密算法库，默认实现了xor算法，也可以使用自己的加解密库。
+        classpath 'com.github.megatronking.stringfog:gradle-plugin:5.1.0'
         classpath 'com.github.megatronking.stringfog:xor:5.0.0'
     }
 }
+
 plugins {
     id 'com.android.application' version '8.1.2' apply false
     id 'com.android.library' version '8.1.2' apply false
 }
-task clean(type: Delete) {
+
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }

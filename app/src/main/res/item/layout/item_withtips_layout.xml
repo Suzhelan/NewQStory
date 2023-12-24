@@ -38,6 +38,7 @@
         android:text="假如这个功能要附带说明信息的话"
         android:textSize="13sp"
         android:visibility="gone"
+        android:textColor="#3d5558"
         app:layout_constraintEnd_toStartOf="@+id/common_item_switch"
         app:layout_constraintStart_toStartOf="@id/item_left_text"
         app:layout_constraintTop_toBottomOf="@id/item_left_text" />

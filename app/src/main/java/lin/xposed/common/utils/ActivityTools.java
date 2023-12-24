@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.ReflectException;
 import lin.xposed.R;
 import lin.xposed.hook.HookEnv;
@@ -65,12 +65,12 @@ public class ActivityTools {
 
     public static Activity getTopActivity() {
         try {
-            Object ActivityThread = FieIdUtils.getStaticFieId(Class.forName("android.app.ActivityThread"), "sCurrentActivityThread");
-            Map<?, ?> activities = FieIdUtils.getUnknownTypeField(ActivityThread, "mActivities");
+            Object ActivityThread = FieldUtils.getStaticFieId(Class.forName("android.app.ActivityThread"), "sCurrentActivityThread");
+            Map<?, ?> activities = FieldUtils.getUnknownTypeField(ActivityThread, "mActivities");
             for (Object activityRecord : activities.values()) {
-                boolean isPause = FieIdUtils.getField(activityRecord, "paused", boolean.class);
+                boolean isPause = FieldUtils.getField(activityRecord, "paused", boolean.class);
                 if (!isPause) {
-                    Activity act = FieIdUtils.getUnknownTypeField(activityRecord, "activity");
+                    Activity act = FieldUtils.getUnknownTypeField(activityRecord, "activity");
                     injectResourcesToContext(act);
                     return act;
                 }

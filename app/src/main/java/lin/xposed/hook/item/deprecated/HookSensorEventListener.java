@@ -1,4 +1,4 @@
-package lin.xposed.hook.item;
+package lin.xposed.hook.item.deprecated;
 
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;

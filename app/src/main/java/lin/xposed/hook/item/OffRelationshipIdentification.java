@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
@@ -23,7 +23,7 @@ public class OffRelationshipIdentification extends BaseSwitchFunctionHookItem {
         hookAfter(method, new HookBehavior() {
             @Override
             public void execute(XC_MethodHook.MethodHookParam param) throws Throwable {
-                Object recyclerView = FieIdUtils.getFirstField(param.thisObject, ClassUtils.getClass("com.tencent.biz.richframework.widget.listview.card.RFWCardListView"));
+                Object recyclerView = FieldUtils.getFirstField(param.thisObject, ClassUtils.getClass("com.tencent.biz.richframework.widget.listview.card.RFWCardListView"));
                 if (recyclerView == null) return;
                 LinearLayout parent = MethodUtils.callNoParamsMethod(recyclerView, "getParent", ViewParent.class);
                 if (parent == null) {

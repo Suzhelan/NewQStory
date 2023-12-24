@@ -15,7 +15,7 @@ import java.util.Arrays;
 import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ConstructorUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.xposed.common.utils.FileUtils;
 import lin.xposed.common.utils.HttpUtils;
 import lin.xposed.hook.util.PathTool;
@@ -77,8 +77,8 @@ public class CreateElement {
             Object jsonGrayElement = ConstructorUtils.newInstance(ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.JsonGrayElement"), new Class[]{long.class, String.class, String.class, boolean.class, ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.XmlToJsonParam")}, empty ? 1014 : 1015, jsonObject.toString(), "", false, null);
 
             Object grayTipElement = ConstructorUtils.newInstance(ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.GrayTipElement"));
-            FieIdUtils.setField(grayTipElement, "subElementType", null, 17);
-            FieIdUtils.setField(grayTipElement, "jsonGrayTipElement", null, jsonGrayElement);
+            FieldUtils.setField(grayTipElement, "subElementType", null, 17);
+            FieldUtils.setField(grayTipElement, "jsonGrayTipElement", null, jsonGrayElement);
 
             Object msgElement = ConstructorUtils.newInstance(ClassUtils.getClass("com.tencent.qqnt.kernel.nativeinterface.MsgElement"));
             XposedHelpers.callMethod(msgElement, "setElementType", new Class[]{int.class}, 8);

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@color/bg_plugin"
+    android:fitsSystemWindows="true">
+
+    <Button
+        android:id="@+id/getFromID"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_horizontal"
+        android:text="点击输入ID获取" />
+
+    <TextView
+        android:id="@+id/ShowTip"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/getFromID"
+        android:text="到tg使用机器人@QToolHelperBot可以添加贴纸包"
+        android:textColor="@color/font_plugin" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ShowTip"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/Bundle_Content_List"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical" />
+    </ScrollView>
+
+</RelativeLayout>

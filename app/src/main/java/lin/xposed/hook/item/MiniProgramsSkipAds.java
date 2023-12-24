@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.hook.HookEnv;
@@ -51,7 +51,7 @@ public class MiniProgramsSkipAds extends BaseSwitchFunctionHookItem implements I
                 Object thisObject = param.thisObject;
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     try {
-                        FieIdUtils.setField(thisObject, "n", boolean.class, true);//代码搜索"GdtMotiveBrowsingDialog", 1, "doOnBackEvent"方法内部判断调用的就是
+                        FieldUtils.setField(thisObject, "n", boolean.class, true);//代码搜索"GdtMotiveBrowsingDialog", 1, "doOnBackEvent"方法内部判断调用的就是
                         m1.invoke(thisObject);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -66,7 +66,7 @@ public class MiniProgramsSkipAds extends BaseSwitchFunctionHookItem implements I
             MethodIfExists = MethodUtils.findMethod(GdtMvViewController, null, boolean.class, new Class[]{boolean.class});
             if (MethodIfExists != null) {
                 hookBefore(MethodIfExists, param -> {
-                    FieIdUtils.setField(param.thisObject, "k", boolean.class, true);
+                    FieldUtils.setField(param.thisObject, "k", boolean.class, true);
                 });
             }
         }
@@ -81,7 +81,7 @@ public class MiniProgramsSkipAds extends BaseSwitchFunctionHookItem implements I
             if (MethodIfExists != null) {
                 hookAfter(MethodIfExists, param -> {
                     //GdtMvVideoViewController字段
-                    Object field = FieIdUtils.getFirstField(param.thisObject, GdtMvViewController);//GdtMvViewController字段
+                    Object field = FieldUtils.getFirstField(param.thisObject, GdtMvViewController);//GdtMvViewController字段
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
                         //GdtMvVideoViewController", 1, "audioSwitch click is called isSilentMode =

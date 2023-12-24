@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * 反射字段工具
  */
-public class FieIdUtils {
+public class FieldUtils {
 
     private static final HashMap<String, Field> FIELD_CACHE = new HashMap<>();
 

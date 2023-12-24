@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.R;
 import lin.xposed.common.utils.ActivityTools;
@@ -213,7 +213,7 @@ public class ImageDisplaySender extends BaseSwitchFunctionHookItem {
                 }
             }
             try {
-                sendUin = FieIdUtils.getField(picData, fieldName, String.class);
+                sendUin = FieldUtils.getField(picData, fieldName, String.class);
             } catch (Exception e) {
                 return;
             }

@@ -6,7 +6,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.ApiHookItem;
@@ -55,8 +55,8 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
                             Object aIOParam = param.args[1];
-                            Object aIOSession = FieIdUtils.getFirstField(aIOParam, ClassUtils.getClass("com.tencent.aio.data.AIOSession"));
-                            Object aIOContact = FieIdUtils.getFirstField(aIOSession, ClassUtils.getClass("com.tencent.aio.data.AIOContact"));
+                            Object aIOSession = FieldUtils.getFirstField(aIOParam, ClassUtils.getClass("com.tencent.aio.data.AIOSession"));
+                            Object aIOContact = FieldUtils.getFirstField(aIOSession, ClassUtils.getClass("com.tencent.aio.data.AIOContact"));
                             currentAIOContact = aIOContact;
                         }
                     }
@@ -66,8 +66,8 @@ public class SessionApi extends ApiHookItem implements IMethodFinder {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Object ChatPie = param.thisObject;
-                    AppInterface = FieIdUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"));
-                    currentSessionInfo = FieIdUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                    AppInterface = FieldUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"));
+                    currentSessionInfo = FieldUtils.getFirstField(ChatPie, ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"));
                 }
             });
         }

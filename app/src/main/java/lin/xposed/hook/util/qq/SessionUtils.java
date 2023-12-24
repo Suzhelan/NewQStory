@@ -2,7 +2,7 @@ package lin.xposed.hook.util.qq;
 
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ConstructorUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.item.api.SessionApi;
@@ -27,10 +27,10 @@ public class SessionUtils {
 
     public static QSContact AIOContactToQSContact(Object aioContact) {
         try {
-            String peerUid = FieIdUtils.getField(aioContact, "f", String.class);
-            int type = FieIdUtils.getField(aioContact, "e", int.class);
-            String guild = FieIdUtils.getField(aioContact, "g", String.class);
-            String nick = FieIdUtils.getField(aioContact, "h", String.class);
+            String peerUid = FieldUtils.getField(aioContact, "f", String.class);
+            int type = FieldUtils.getField(aioContact, "e", int.class);
+            String guild = FieldUtils.getField(aioContact, "g", String.class);
+            String nick = FieldUtils.getField(aioContact, "h", String.class);
             QSContact contact = new QSContact(type, peerUid);
             return contact;
         } catch (Exception e) {
@@ -46,10 +46,10 @@ public class SessionUtils {
      */
     public static Object aioContactToContact(Object aioContact) {
         try {
-            String peerUid = FieIdUtils.getField(aioContact, "f", String.class);
-            int type = FieIdUtils.getField(aioContact, "e", int.class);
-            String guild = FieIdUtils.getField(aioContact, "g", String.class);
-            String nick = FieIdUtils.getField(aioContact, "h", String.class);
+            String peerUid = FieldUtils.getField(aioContact, "f", String.class);
+            int type = FieldUtils.getField(aioContact, "e", int.class);
+            String guild = FieldUtils.getField(aioContact, "g", String.class);
+            String nick = FieldUtils.getField(aioContact, "h", String.class);
             Object contact = QQNT.getContact(type, peerUid, guild);
             return contact;
         } catch (Exception e) {

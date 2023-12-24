@@ -23,7 +23,5 @@ android {
 }
 
 dependencies {
-    def appcompat_version = "1.7.0-alpha02"
-    //安卓依赖
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation libs.androidx.appcompat
 }

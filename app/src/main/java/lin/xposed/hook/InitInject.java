@@ -15,6 +15,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import lin.util.ReflectUtils.ClassUtils;
 import lin.xposed.R;
+import lin.xposed.common.utils.ActivityTools;
 import top.linl.activity.ActivityProxyManager;
 import top.linl.dexparser.util.Utils;
 
@@ -22,7 +23,8 @@ public class InitInject implements IXposedHookLoadPackage, IXposedHookZygoteInit
     private static final AtomicBoolean Initialized = new AtomicBoolean();
 
     private static void initAppContextAndHookItem(Context applicationContext) {
-
+        //往context注入res
+        ActivityTools.injectResourcesToContext(applicationContext);
         //获取和设置全局上下文和类加载器
         HookEnv.setHostAppContext(applicationContext);
         ClassUtils.setHostClassLoader(applicationContext.getClassLoader());

@@ -21,7 +21,10 @@ public class QQSettingMeViewBack extends BaseSwitchFunctionHookItem {
     public void loadHook(ClassLoader loader) throws Exception {
         Class<?> settingView;
         Class<?> resultClass;
-        if (HookEnv.getVersionCode() >= QQVersion.QQ_8_9_90) {
+        if (HookEnv.getVersionCode() >= QQVersion.QQ_9_0_0) {
+            settingView = loader.loadClass("com.tencent.mobileqq.QQSettingMe");
+            resultClass = loader.loadClass("com.tencent.mobileqq.QQSettingMeView").getSuperclass();
+        } else if (HookEnv.getVersionCode() >= QQVersion.QQ_8_9_90) {
             settingView = loader.loadClass("com.tencent.mobileqq.QQSettingMe");
             resultClass = loader.loadClass("com.tencent.mobileqq.BaseQQSettingMeView");
         } else {

@@ -26,7 +26,7 @@ public class PathTool {
     }
 
     public static String getModuleCachePath(String dirName) {
-        File cache = new File(getModuleDataPath() + "/" + dirName);
+        File cache = new File(getModuleDataPath() + "/cache/" + dirName);
         if (!cache.exists()) cache.mkdirs();
         return cache.getAbsolutePath();
     }

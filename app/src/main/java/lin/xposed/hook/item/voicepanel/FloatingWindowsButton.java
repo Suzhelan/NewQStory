@@ -41,7 +41,7 @@ public class FloatingWindowsButton {
         if (activity == null) return;
         try {
             ActivityTools.injectResourcesToContext(activity);
-            if (isShow) {
+            if (isShow && !activity.isFinishing()) {
                 if (activity == LastActivity) {
                     //activity token 未过期
                     if (!isShowing.getAndSet(true)) {
@@ -111,7 +111,7 @@ public class FloatingWindowsButton {
         layoutParams.height = ScreenParamUtils.dpToPx(context, 30);
         //获取展示位置配置
         SimpleConfig config = new SimpleConfig(TAG);
-        int x = config.get("show x"), y = config.get("show y");
+        int x = config.get("show x", 0), y = config.get("show y", 0);
         //初始的展示位置
         layoutParams.x = x != 0 ? x : 50;
         layoutParams.y = y != 0 ? y : 50;

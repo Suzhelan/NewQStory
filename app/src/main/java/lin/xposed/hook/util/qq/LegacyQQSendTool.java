@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import lin.util.ReflectUtils.ClassUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.ConstructorUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.common.utils.DataUtils;
 import lin.xposed.common.utils.FileUtils;
@@ -40,13 +41,26 @@ public class LegacyQQSendTool {
         sendPic(session, MsgBuilder.builderPic(session, MsgBuilder.checkAndGetCastPic(path)));
     }
 
+    public static void setPicText(Object MessageForPic, String PicText) {
+        try {
+            Class<?> PicData = ClassUtils.getClass("com.tencent.mobileqq.data.PicMessageExtraData");
+            Object PicInfo = FieldUtils.getField(MessageForPic, "picExtraData", PicData);
+            if (PicInfo == null) {
+                FieldUtils.setField(MessageForPic, "picExtraData", ConstructorUtils.newInstance(PicData));
+                PicInfo = FieldUtils.getField(MessageForPic, "picExtraData", PicData);
+            }
+            FieldUtils.setField(PicInfo, "textSummary", PicText);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //发送对象,图片对象
     public static void sendPic(Object session, Object pic) {
         Method m = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, void.class, new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), ClassUtils.getClass("com.tencent.mobileqq.data.MessageForPic"), int.class});
         if (m == null) {
             LogUtils.addError(new NullPointerException("find sendPic method == null"));
         }
-
         try {
             m.invoke(null, SessionUtils.LegacyQQ.getAppInterface(), session, pic, 0);
         } catch (Exception e) {
@@ -81,9 +95,9 @@ public class LegacyQQSendTool {
             try {
                 Method CallMethod = MethodUtils.findMethod(ClassUtils.getClass("com.tencent.mobileqq.activity.ChatActivityFacade"), null, ClassUtils.getClass("com.tencent.mobileqq.data.ChatMessage"), new Class[]{ClassUtils.getClass("com.tencent.mobileqq.app.QQAppInterface"), ClassUtils.getClass("com.tencent.mobileqq.activity.aio.SessionInfo"), String.class});
                 Object PICMsg = CallMethod.invoke(null, SessionUtils.LegacyQQ.getAppInterface(), session, path);
-                FieIdUtils.setField(PICMsg, "md5", DataUtils.getFileMD5(new File(path)));
-                FieIdUtils.setField(PICMsg, "uuid", DataUtils.getFileMD5(new File(path)) + ".jpg");
-                FieIdUtils.setField(PICMsg, "localUUID", UUID.randomUUID().toString());
+                FieldUtils.setField(PICMsg, "md5", DataUtils.getFileMD5(new File(path)));
+                FieldUtils.setField(PICMsg, "uuid", DataUtils.getFileMD5(new File(path)) + ".jpg");
+                FieldUtils.setField(PICMsg, "localUUID", UUID.randomUUID().toString());
                 MethodUtils.callNoParamsMethod(PICMsg, "prewrite", void.class);
                 return PICMsg;
             } catch (Exception e) {

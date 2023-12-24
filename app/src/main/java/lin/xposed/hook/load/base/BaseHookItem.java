@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XposedBridge;
+import lin.util.ReflectUtils.ClassUtils;
 import lin.xposed.BuildConfig;
 import lin.xposed.hook.util.LogUtils;
 
@@ -15,7 +16,7 @@ import lin.xposed.hook.util.LogUtils;
 public abstract class BaseHookItem {
 
     private String itemPath;
-
+    private boolean isLoad = false;
     private boolean hasUiPath = true;
     private ExceptionCollectionTool exceptionCollectionTool;
 
@@ -35,6 +36,7 @@ public abstract class BaseHookItem {
     public void setHasUiPath(boolean isHasPath) {
         this.hasUiPath = isHasPath;
     }
+
     /**
      * 是默认加载
      */
@@ -42,10 +44,21 @@ public abstract class BaseHookItem {
         return false;
     }
 
+    public void startLoadHook() {
+        //防止重复hook
+        if (isLoad) return;
+        try {
+            isLoad = true;
+            loadHook(ClassUtils.getHostLoader());
+        } catch (Exception e) {
+            getExceptionCollectionToolInstance().addException(e);
+        }
+    }
+
     /**
      * 加载代码
      */
-    public abstract void loadHook(ClassLoader classLoader) throws Exception;
+    protected abstract void loadHook(ClassLoader classLoader) throws Exception;
 
     /*
      * 初始化项目路径

@@ -29,6 +29,15 @@ public class SimpleConfig {
             return null;
         }
     }
+
+    public <T> T get(String key, T defaultValue) {
+        try {
+            return (T) dataReader.get(key);
+        } catch (JSONException e) {
+            return defaultValue;
+        }
+    }
+
     public void put(String key, Object value) {
         try {
             dataReader.put(key, value);

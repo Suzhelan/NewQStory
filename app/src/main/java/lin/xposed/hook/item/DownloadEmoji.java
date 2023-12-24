@@ -15,7 +15,7 @@ import java.util.List;
 
 import lin.util.ReflectUtils.ClassUtils;
 import lin.util.ReflectUtils.ConstructorUtils;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.util.ReflectUtils.MethodUtils;
 import lin.xposed.R;
@@ -33,12 +33,13 @@ import lin.xposed.hook.util.ToastTool;
 @HookItem("辅助功能/表情/在新的QQ中依然可以下载表情")
 public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethodFinder {
 
-    private Object dialog;
     private final String privateTAG = "保存本地";
     Class<?> emojiInfoClass;
+    private Object dialog;
     private String emojiUrl;
 
     private String emojiMD5;
+
     @Override
     public String getTips() {
         return "在版本大于等于8.9.80时QQ关闭了表情保存 此功能可以继续下载表情 保存到的路径为 " + PathTool.getStorageDirectory() + "/Pictures/QQ/";
@@ -50,7 +51,7 @@ public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethod
         Class<?> AIOEmotionFragmentClass = ClassUtils.getClass("com.tencent.mobileqq.emotionintegrate.AIOEmotionFragment");
         Method method = AIOEmotionFragmentClass.getMethod("onCreate", Bundle.class);
         //获取MD5
-        hookAfter(method,param -> {
+        hookAfter(method, param -> {
             Object emojiInfo = null;
             for (Field field : param.thisObject.getClass().getDeclaredFields()) {
                 if (field.getType() == emojiInfoClass) {
@@ -65,7 +66,7 @@ public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethod
                     if (result == null) continue;
                     if (result.length() > 16) {
                         emojiMD5 = result.toUpperCase();
-                        emojiUrl = "http://gchat.qpic.cn/gchatpic_new/0/0-0-"+result.toUpperCase()+"/0?term=2";
+                        emojiUrl = "http://gchat.qpic.cn/gchatpic_new/0/0-0-" + result.toUpperCase() + "/0?term=2";
                         break;
                     }
                 }
@@ -76,7 +77,7 @@ public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethod
 
         //注入点击事件 因为没有找到别的注入点
         Class<?> ActionSheetItemAdapterClass = classLoader.loadClass("com.tencent.mobileqq.widget.share.ShareActionSheetV2$ActionSheetItemAdapter");
-        hookAfter(ActionSheetItemAdapterClass.getMethod("getView",int.class, android.view.View.class, android.view.ViewGroup.class),param -> {
+        hookAfter(ActionSheetItemAdapterClass.getMethod("getView", int.class, android.view.View.class, android.view.ViewGroup.class), param -> {
             ViewGroup resultView = (ViewGroup) param.getResult();
             for (int i = 0; i < resultView.getChildCount(); i++) {
                 View view = resultView.getChildAt(i);
@@ -86,7 +87,7 @@ public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethod
                         resultView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                new Thread(()->{
+                                new Thread(() -> {
                                     try {
                                         Activity activity = ActivityTools.getActivity();
                                         //关闭弹窗
@@ -117,17 +118,17 @@ public class DownloadEmoji extends BaseSwitchFunctionHookItem implements IMethod
         //插入item
         Class<?> ShareActionSheetV2Class = classLoader.loadClass("com.tencent.mobileqq.widget.share.ShareActionSheetV2");
         Method m3 = ShareActionSheetV2Class.getMethod("setActionSheetItems", List[].class);
-        hookBefore(m3,param -> {
+        hookBefore(m3, param -> {
             List[] params = (List[]) param.args[0];
             for (List list : params) {
                 for (Object item : list) {
-                    String label = FieIdUtils.getField(item, "label", String.class);
+                    String label = FieldUtils.getField(item, "label", String.class);
 
                     if (label != null && label.equals("添加到表情")) {
                         Object mItem = ConstructorUtils.newInstance(item.getClass());
-                        FieIdUtils.setField(mItem, "icon", R.drawable.download_icon);
-                        FieIdUtils.setField(mItem, "reportID", "QStory_DownLoadEmoji");
-                        FieIdUtils.setField(mItem, "label", privateTAG);
+                        FieldUtils.setField(mItem, "icon", R.drawable.download_icon);
+                        FieldUtils.setField(mItem, "reportID", "QStory_DownLoadEmoji");
+                        FieldUtils.setField(mItem, "label", privateTAG);
                         list.add(0, mItem);
                         this.dialog = param.thisObject;
                         break;

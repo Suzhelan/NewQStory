@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import lin.util.ReflectUtils.FieIdUtils;
+import lin.util.ReflectUtils.FieldUtils;
 import lin.util.ReflectUtils.MethodTool;
 import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
@@ -46,7 +46,7 @@ public class ListenChatsShowAndHide extends ApiHookItem implements IMethodFinder
             XposedBridge.hookMethod(showMethod, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    Object aioContact = FieIdUtils.getFirstField(param.thisObject, CommonQQMethodTools.getAIOContactClass());
+                    Object aioContact = FieldUtils.getFirstField(param.thisObject, CommonQQMethodTools.getAIOContactClass());
                     SessionUtils.QSContact qsContact = SessionUtils.AIOContactToQSContact(aioContact);
                     if (TextUtils.isEmpty(qsContact.peerUid)) return;
                     for (OnChatShowListener onChatShowListener : onChatShowListenerList) {
