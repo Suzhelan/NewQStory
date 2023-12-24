@@ -26,6 +26,7 @@ import lin.xposed.hook.QQVersion;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.item.api.AIOMessageMenu;
 import lin.xposed.hook.item.emojipanel.EmoPanel;
+import lin.xposed.hook.item.emojipanel.EmoSearchAndCache;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 import lin.xposed.hook.util.PathTool;
 import lin.xposed.hook.util.ToastTool;
@@ -41,7 +42,7 @@ public class EmoPanelInject extends BaseSwitchFunctionHookItem {
 
     @Override
     public String getTips() {
-        return "因为FunPanel的QTool表情面板#2太难用 , 所以有了这个从QTool移植适配来的表情面板#1 , 表情以文件夹组保存在" + PathTool.getModuleDataPath() + "/Pic/" + "单击可以复制";
+        return " ̶因̶为̶F̶u̶n̶P̶a̶n̶e̶l̶的̶Q̶T̶o̶o̶l̶表̶情̶面̶板̶#̶2̶难̶用̶ , 所以有了这个从QTool移植适配来的表情面板#1 , 表情以文件夹组保存在" + PathTool.getModuleDataPath() + "/Pic/" + "单击可以复制";
     }
 
     @Override
@@ -84,6 +85,8 @@ public class EmoPanelInject extends BaseSwitchFunctionHookItem {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                File dir = new File(EmoSearchAndCache.PIC_PATH);
+                if (!dir.exists()) dir.mkdirs();
                 initIcon();
             }
         }).start();
