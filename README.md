@@ -20,7 +20,7 @@
 * **更新频率**
 
     -  随缘更新
-    - [Releases](https://github.com/Suzhelan/NewQStory/releases) 大约在版本迭代5-10个内更新
+    - [Releases](https://github.com/Suzhelan/NewQStory/releases) 大约在版本迭代5-10个内工作日内更新
     - [Telegram](https://t.me/WhenFlowersAreInBloom) 在构建测试结束后会更新
 
 ---  
