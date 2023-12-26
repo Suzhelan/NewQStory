@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.*;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +30,15 @@ import lin.xposed.hook.item.api.AIOMessageMenu;
 import lin.xposed.hook.item.emojipanel.EmoPanel;
 import lin.xposed.hook.item.emojipanel.EmoSearchAndCache;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
+import lin.xposed.hook.load.methodfind.IMethodFinder;
+import lin.xposed.hook.load.methodfind.MethodFinder;
+import lin.xposed.hook.util.OutputHookStack;
 import lin.xposed.hook.util.PathTool;
 import lin.xposed.hook.util.ToastTool;
 
 @HookItem("辅助功能/聊天/表情面板#1")
-public class EmoPanelInject extends BaseSwitchFunctionHookItem {
+public class EmoPanelInject extends BaseSwitchFunctionHookItem implements IMethodFinder {
+    private Method initEmoPanelMethod;
 
     private final String emoIconFilePath = PathTool.getModuleDataPath() + "/滑稽.png";
     private final String night_emoIconPath = PathTool.getModuleDataPath() + "/暗黑滑稽.png";
@@ -110,6 +116,17 @@ public class EmoPanelInject extends BaseSwitchFunctionHookItem {
         return emoIcon;
     }
 
+    @Override
+    public void startFind(MethodFinder finder) throws Exception {
+        initEmoPanelMethod = finder.findMethodString("emoBtnLayout.findViewById(R.id.emo_btn)")[0];
+        finder.putMethod("initEmoPanel type = ", initEmoPanelMethod);
+    }
+
+    @Override
+    public void getMethod(MethodFinder finder) {
+        initEmoPanelMethod = finder.getMethod("initEmoPanel type = ");
+    }
+
     public class QQNT {
         public void hookLongClick() {
             Class<?> aioMsgItemClass = ClassUtils.getClass("com.tencent.mobileqq.aio.msg.AIOMsgItem");
@@ -156,6 +173,26 @@ public class EmoPanelInject extends BaseSwitchFunctionHookItem {
         }
 
         public void createEmoPanelIcon() {
+            Log.d("【QStory】",initEmoPanelMethod.getName());
+
+            hookAfter(initEmoPanelMethod,param -> {
+                for (Field field: param.thisObject.getClass().getDeclaredFields()) {
+                    if (field.getType() == FrameLayout.class){
+                        field.setAccessible(true);
+                        FrameLayout inputPanel = (FrameLayout) field.get(param.thisObject);
+                        int emoBtnResId = inputPanel.getResources().getIdentifier("emo_btn","id",HookEnv.getCurrentHostAppPackageName());
+                        ImageButton emoBtn = inputPanel.findViewById(emoBtnResId);
+                        if (emoBtn != null){
+                            emoBtn.setOnLongClickListener(v ->{
+                                Toast.makeText(HookEnv.getHostAppContext(), "你长按了这个表情面板【QStory】", Toast.LENGTH_SHORT).show();
+                                EmoPanel.createShow((Context)param.thisObject);
+                                return true;
+                            });
+                        }
+                    }
+                }
+            });
+
             Class<?> clz = ClassUtils.getClass("com.tencent.qqnt.aio.shortcutbar.PanelIconLinearLayout");
             Method hookMethod = null;
             for (Method method : clz.getDeclaredMethods()) {
@@ -181,6 +218,8 @@ public class EmoPanelInject extends BaseSwitchFunctionHookItem {
                     }
                 }
             });
+
+
         }
     }
 
