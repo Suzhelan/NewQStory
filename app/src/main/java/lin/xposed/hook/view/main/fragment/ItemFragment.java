@@ -20,7 +20,7 @@ import lin.xposed.hook.view.main.itemview.info.DirectoryUiInfo;
 import lin.xposed.hook.view.main.itemview.info.ItemUiInfoGroupWrapper;
 
 public class ItemFragment extends Fragment {
-    private final DirectoryUiInfo directoryUiInfo;
+    private static DirectoryUiInfo directoryUiInfo;
     private ArrayList<Object> dataList;
 
     //整理非首次的数据
@@ -34,10 +34,18 @@ public class ItemFragment extends Fragment {
         dataList.addAll(directoryUiInfo.uiInfoList);
     }
 
+    /**
+     * 深色模式会调用默认无参构造函数
+     */
+    public ItemFragment() {
+        super();
+    }
+
     public ItemFragment(DirectoryUiInfo newDirInfo) {
         super();
         directoryUiInfo = newDirInfo;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

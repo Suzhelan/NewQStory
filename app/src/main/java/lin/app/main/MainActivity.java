@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             "android.permission.WRITE_EXTERNAL_STORAGE",//外部写
             "android.permission.READ_EXTERNAL_STORAGE"//外部读
     };
-    public static List<MainItemListView.ItemInfo> itemInfoList = new ArrayList<>();
+    public List<MainItemListView.ItemInfo> itemInfoList = new ArrayList<>();
     private ActivityMainBinding binding;
     private ListView itemListView;
     private ArrayAdapter<MainItemListView.ItemInfo> itemInfoArrayAdapter;

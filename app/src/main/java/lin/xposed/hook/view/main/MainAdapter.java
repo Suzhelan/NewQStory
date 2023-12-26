@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -215,13 +216,16 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         //
                         Bundle bundle = new Bundle();
                         bundle.putString("TAG", directoryUiInfo.getItemName());
-                        ItemFragment fragment = new ItemFragment(directoryUiInfo);
-                        fragment.setArguments(bundle);
                         FragmentManager fragmentManager = SettingViewFragment.firstFragment.getParentFragmentManager();
+                        Fragment fragment = fragmentManager.findFragmentByTag(directoryUiInfo.getItemName());
+                        if (fragment == null) {
+                            fragment = new ItemFragment(directoryUiInfo);
+                            fragment.setArguments(bundle);
+                        }
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_left, R.anim.fragment_pop_enter, R.anim.fragment_pop_exit);//动画
                         transaction.addToBackStack(null);//添加返回栈
-                        transaction.replace(MainSettingActivity.ITEM_LIST_CONTAINER, fragment);//替换
+                        transaction.replace(MainSettingActivity.ITEM_LIST_CONTAINER, fragment, directoryUiInfo.getItemName());//替换
                         transaction.commit();//提交更改
                     } catch (Exception e) {
                         LogUtils.addError(e);

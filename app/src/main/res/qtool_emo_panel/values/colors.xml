@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="font_plugin">@color/black</color>
+
+<color name="font_plugin">@color/black</color>
     <color name="bg_plugin">@color/white</color>
+
 </resources>

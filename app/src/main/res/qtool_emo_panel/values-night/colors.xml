@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="font_plugin">@color/white</color>
+    <color name="bg_plugin">#1A1C1E</color>
+
+</resources>

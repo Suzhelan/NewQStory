@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,8 +28,6 @@ public class SettingViewFragment extends Fragment {
     public static Fragment firstFragment;
     private static List<Object> FirstItemViewInfoList;//{group,dirIno,dirInfo}
     private RecyclerView recyclerView;
-    private MainAdapter itemViewAdapter;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,10 +36,6 @@ public class SettingViewFragment extends Fragment {
         firstFragment = this;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

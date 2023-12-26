@@ -24,12 +24,18 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lin.xposed.R;
+import lin.xposed.common.utils.ActivityTools;
 import lin.xposed.common.utils.ScreenParamUtils;
 import lin.xposed.hook.annotation.HookItem;
 import lin.xposed.hook.load.base.BaseSwitchFunctionHookItem;
 
 @HookItem("辅助功能/季节专属/雪花飘落")
 public class SnowflakesFall extends BaseSwitchFunctionHookItem {
+    @Override
+    public String getTips() {
+        return "想要留住雪花 , 可在掌心里 , 只会化的更快";
+    }
+
     /**
      * 复用池 以便activity即使不在焦点也能保存之前view防止重新下雪
      */
@@ -43,6 +49,7 @@ public class SnowflakesFall extends BaseSwitchFunctionHookItem {
         Show show = showList.get(activity);
         if (show == null) {
             show = new Show();
+            ActivityTools.injectResourcesToContext(activity);
             showList.put(activity, show);
         }
         if (isShow) {

@@ -38,7 +38,7 @@ android {
         minSdk 28
         //noinspection ExpiredTargetSdkVersion
         targetSdk 29
-        versionCode 72
+        versionCode 73
         versionName parseVersionCode(versionCode)
     }
 
@@ -105,7 +105,6 @@ dependencies {
     implementation libs.glide//image绘制库
     implementation project(':XPopup')
     implementation project(':easy-adapter')
-    implementation "com.airbnb.android:lottie:5.2.0"
 
     //防止kt版本不匹配编译异常 (虽然没用到kt语言)
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.8.20-RC'))
